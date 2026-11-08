@@ -182,3 +182,13 @@ Por petición expresa del propietario, se entrega primero una interfaz sencilla 
 - No se implementan en esta entrega vigencia por fecha, fase activa, duplicación, comparación, totales de comidas ni conexión de fases con instantáneas nutricionales. Las reglas avanzadas de H5 anteriores quedan aplazadas.
 - Esquema local v5 con migración que conserva registros, preferencias, objetivos e instantáneas nutricionales.
 - Validación: 25 pruebas de dominio/persistencia y 10 recorridos de navegador, además de lint y build.
+
+
+## Duplicación y comparación de fases entregadas
+
+- Copia independiente guardada con identificadores nuevos de fase y comidas; origen y contenido anterior se conservan. La edición de una copia mantiene su procedencia y correspondencia de comidas.
+- Comparación seleccionable en ambos sentidos, resumen de comidas añadidas/eliminadas/modificadas/iguales, texto antes/después, cambios de posición y notas, filtro de solo cambios.
+- Se mantiene el alcance manual: no se interpretan cantidades ni nutrientes, no se vinculan automáticamente objetivos y no se archivan ni bloquean fases por fecha. Para conservar un plan se duplica antes de editar; las ediciones directas siguen actualizando la fase seleccionada.
+- Compatible con fases v5 existentes, sin migración destructiva ni cambio de esquema.
+- Esta entrega cubre conservación y comparación de planes. H6 (manifiesto, instalación, service worker, caché y comprobación sin conexión) sigue pendiente.
+- Verificación: 31 pruebas de dominio/persistencia, 12 recorridos en navegador, lint y build.

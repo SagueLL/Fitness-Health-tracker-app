@@ -4,6 +4,7 @@ export interface DietMeal {
   id: string
   name: string
   foods: string
+  lineageId?: string
 }
 export interface DietDraft {
   name: string
@@ -14,6 +15,8 @@ export interface DietPhase extends DietDraft {
   id: string
   createdAt: string
   updatedAt: string
+  sourcePhaseId?: string
+  sourcePhaseName?: string
 }
 
 export function cleanDiet(draft: DietDraft): DietDraft {
@@ -27,7 +30,7 @@ export function cleanDiet(draft: DietDraft): DietDraft {
     ids.add(meal.id)
     if (!meal.name.trim() || meal.name.trim().length > 100) throw new ValidationError(`Pon un nombre de hasta 100 caracteres a la comida ${index + 1}.`)
     if (!meal.foods.trim() || meal.foods.length > 5000) throw new ValidationError(`Escribe los alimentos de la comida ${index + 1} (hasta 5000 caracteres).`)
-    return { id: meal.id, name: meal.name.trim(), foods: meal.foods.trim() }
+    return { id: meal.id, name: meal.name.trim(), foods: meal.foods.trim(), ...(meal.lineageId ? { lineageId: meal.lineageId } : {}) }
   })
   return { name, notes: draft.notes.trim(), meals }
 }

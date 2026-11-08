@@ -2,7 +2,7 @@ import 'fake-indexeddb/auto'
 import Dexie from 'dexie'
 import { afterEach, expect, it } from 'vitest'
 import { AppDatabase } from './database'
-import { deleteDietPhase, readDietPhases, saveDietPhase } from './dietRepository'
+import { deleteDietPhase, duplicateDietPhase, readDietPhases, saveDietPhase } from './dietRepository'
 import type { DietDraft } from '../domain/diet'
 
 const names: string[] = []
@@ -53,5 +53,44 @@ it('rechaza fases y comidas vacías sin cambiar lo guardado', async () => {
     await expect(saveDietPhase(invalid, first.id, db)).rejects.toThrow()
   }
   expect(await db.dietPhases.get(first.id)).toEqual(first)
+  db.close()
+})
+
+it('duplica con identidades independientes, conserva el origen al editar y persiste las copias', async () => {
+  const name = `diet-${crypto.randomUUID()}`; names.push(name)
+  const db = new AppDatabase(name)
+  const original = await saveDietPhase(draft, undefined, db)
+  const copy = await duplicateDietPhase(original.id, db)
+  const another = await duplicateDietPhase(original.id, db)
+  expect(copy.name).toBe('Fase 1 (copia)')
+  expect(another.name).toBe('Fase 1 (copia 2)')
+  expect(copy.id).not.toBe(original.id)
+  expect(copy.meals[0].id).not.toBe(original.meals[0].id)
+  expect(copy.meals[0].lineageId).toBe(original.meals[0].id)
+  expect(copy.notes).toBe(original.notes)
+  const edited = await saveDietPhase({ ...copy, meals: [{ ...copy.meals[0], name: 'Otro desayuno', foods: '50 g de avena' }] }, copy.id, db)
+  expect(edited.sourcePhaseId).toBe(original.id)
+  expect(edited.meals[0].lineageId).toBe(original.meals[0].id)
+  expect(await db.dietPhases.get(original.id)).toEqual(original)
+  await deleteDietPhase(original.id, db)
+  expect(await db.dietPhases.get(copy.id)).toEqual(edited)
+  db.close()
+  const reopened = new AppDatabase(name)
+  expect(await reopened.dietPhases.get(copy.id)).toEqual(edited)
+  expect((await readDietPhases(reopened))).toHaveLength(2)
+  reopened.close()
+})
+
+it('duplica copias conservando la correspondencia y no crea nada si el origen no existe', async () => {
+  const name = `diet-${crypto.randomUUID()}`; names.push(name)
+  const db = new AppDatabase(name)
+  const original = await saveDietPhase({ ...draft, name: 'a'.repeat(100) }, undefined, db)
+  const copy = await duplicateDietPhase(original.id, db)
+  const next = await duplicateDietPhase(copy.id, db)
+  expect(copy.name.length).toBeLessThanOrEqual(100)
+  expect(next.meals[0].lineageId).toBe(original.meals[0].id)
+  expect(next.meals[0].id).not.toBe(copy.meals[0].id)
+  await expect(duplicateDietPhase('missing', db)).rejects.toThrow('ya no existe')
+  expect(await db.dietPhases.count()).toBe(3)
   db.close()
 })

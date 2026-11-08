@@ -149,4 +149,13 @@ Los recursos de la aplicación aún necesitan conexión; el soporte sin conexió
 
 En la pestaña Dieta hay dos apartados: **Mi dieta** (`/#/dieta`) y **Calculadora** (`/#/dieta/calculadora`). Cada fase guarda un nombre, una lista de comidas y notas opcionales. Cada comida tiene un nombre y un texto libre para alimentos, cantidades y alternativas. Se conserva el orden de introducción y los saltos de línea.
 
-La edición actualiza la fase seleccionada, sin crear un historial de revisiones de comidas. Se pueden quitar comidas del formulario y eliminar fases con confirmación. Los cambios solo se aplican al guardar; Cancelar permite descartarlos. No hay activación por fecha, catálogo de alimentos, cálculo nutricional, comparación automática de fases ni registro de consumo. Este alcance simplificado sustituye para esta entrega al editor avanzado inicialmente propuesto.
+La edición actualiza la fase seleccionada, sin crear un historial de revisiones de comidas. Se pueden quitar comidas del formulario y eliminar fases con confirmación. Duplicar fase crea una copia independiente con nombre y comidas propios, conservando el plan de origen. Los cambios solo se aplican al guardar; Cancelar permite descartarlos. No hay activación por fecha, catálogo de alimentos, cálculo nutricional, registro de consumo. Este alcance simplificado sustituye para esta entrega al editor avanzado inicialmente propuesto.
+
+
+### Duplicar y comparar fases
+
+- En Mi dieta, **Duplicar fase** guarda una copia y la selecciona. Usa **Editar fase** para preparar la nueva versión conservando la anterior. Cada copia tiene identificadores propios y conserva la correspondencia entre comidas para compararlas aunque se renombren.
+- **Comparar fases** permite elegir referencia y comparada, intercambiarlas y mostrar solo comidas con cambios o todas. Muestra texto anterior y nuevo, comidas añadidas/eliminadas/modificadas, posición y cambios de notas. No interpreta cantidades ni calcula diferencias nutricionales.
+- Entre fases independientes se emparejan comidas por nombre (ignorando mayúsculas y espacios exteriores); nombres repetidos se emparejan por aparición. Se comparan los contenidos actualmente guardados, no revisiones automáticas de cada edición. Las fases siguen siendo editables y eliminables de forma explícita.
+- Las fases anteriores ya guardadas continúan funcionando. No se requiere cambiar el esquema v5: las referencias de copia son campos opcionales.
+- Duplicar y comparar funciona sobre IndexedDB. Esto conserva planes, pero no instala la app ni habilita todavía su carga sin conexión: el service worker y el manifiesto PWA siguen pendientes.

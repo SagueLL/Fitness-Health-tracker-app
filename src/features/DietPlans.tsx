@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { deleteDietPhase, readDietPhases, saveDietPhase } from '../data/dietRepository'
+import { deleteDietPhase, duplicateDietPhase, readDietPhases, saveDietPhase } from '../data/dietRepository'
 import { type DietDraft, type DietMeal, type DietPhase } from '../domain/diet'
+import DietComparison from './DietComparison'
 import { ValidationError } from '../domain/daily'
 
 const newMeal = (): DietMeal => ({ id: crypto.randomUUID(), name: '', foods: '' })
@@ -55,6 +56,7 @@ function DietEditor({ phase, onSave, onCancel }: { phase?: DietPhase; onSave: (p
 export default function DietPlans() {
   const [phases, setPhases] = useState<DietPhase[]>([])
   const [selected, setSelected] = useState<string>()
+  const [comparison, setComparison] = useState<{ before: string; after: string }>()
   const [editor, setEditor] = useState<{ phase?: DietPhase }>()
   const [ready, setReady] = useState(false)
   const [busy, setBusy] = useState(false)
@@ -69,6 +71,15 @@ export default function DietPlans() {
     return () => { active = false }
   }, [attempt])
   const phase = phases.find(value => value.id === selected)
+  async function duplicate(value: DietPhase) {
+    setBusy(true); setError(''); setStatus(''); setComparison(undefined)
+    try {
+      const copy = await duplicateDietPhase(value.id)
+      setPhases(values => [copy, ...values]); setSelected(copy.id)
+      setStatus('Copia guardada. Puedes editarla sin cambiar la fase anterior.')
+    } catch (cause) { setError(cause instanceof ValidationError ? cause.message : 'No se pudo duplicar la fase. La original se conserva; vuelve a intentarlo.') }
+    finally { setBusy(false) }
+  }
   function closeEditor() { setEditor(undefined); setTimeout(() => heading.current?.focus(), 0) }
   async function remove(value: DietPhase) {
     if (!window.confirm(`¿Eliminar la fase «${value.name}» y sus comidas? Esta acción no se puede deshacer.`)) return
@@ -76,23 +87,29 @@ export default function DietPlans() {
     try {
       await deleteDietPhase(value.id)
       const remaining = phases.filter(item => item.id !== value.id)
-      setPhases(remaining); setSelected(remaining[0]?.id); setStatus('Fase eliminada.')
+      setComparison(undefined); setPhases(remaining); setSelected(remaining[0]?.id); setStatus('Fase eliminada.')
     } catch { setError('No se pudo eliminar la fase. Vuelve a intentarlo.') }
     finally { setBusy(false) }
   }
   return <>
-    <div className="diet-plan-heading"><div><p className="eyebrow">HECHA POR TI</p><h2 ref={heading} tabIndex={-1}>Mis fases de dieta</h2></div>{ready && !editor && <button className="button" disabled={busy} onClick={() => { setEditor({}); setStatus(''); setError('') }}>Crear fase</button>}</div>
+    <div className="diet-plan-heading"><div><p className="eyebrow">HECHA POR TI</p><h2 ref={heading} tabIndex={-1}>Mis fases de dieta</h2></div>{ready && !editor && <button className="button" disabled={busy} onClick={() => { setComparison(undefined); setEditor({}); setStatus(''); setError('') }}>Crear fase</button>}</div>
     {!ready && !error && <p role="status">Cargando tus fases…</p>}
     {!ready && error && <button type="button" className="button" onClick={() => { setError(''); setAttempt(value => value + 1) }}>Reintentar fases</button>}
     {editor ? <DietEditor key={editor.phase?.id ?? 'new'} phase={editor.phase} onCancel={closeEditor} onSave={saved => {
       setPhases(values => [saved, ...values.filter(value => value.id !== saved.id)]); setSelected(saved.id); setStatus('Fase guardada en este dispositivo.'); closeEditor()
     }} /> : ready && <>
-      {phases.length > 0 && <div className="date-picker"><label htmlFor="diet-phase">Consultar fase</label><select id="diet-phase" value={selected ?? ''} disabled={busy} onChange={event => { setSelected(event.target.value); setStatus(''); setError('') }}>{phases.map(value => <option key={value.id} value={value.id}>{value.name}</option>)}</select></div>}
+      {phases.length > 0 && <div className="date-picker"><label htmlFor="diet-phase">Consultar fase</label><select id="diet-phase" value={selected ?? ''} disabled={busy} onChange={event => { setComparison(undefined); setSelected(event.target.value); setStatus(''); setError('') }}>{phases.map(value => <option key={value.id} value={value.id}>{value.name}</option>)}</select></div>}
       {phase ? <section className="panel diet-view" aria-labelledby="phase-title"><span className="badge">TU PLAN DE COMIDAS</span><h2 id="phase-title">{phase.name}</h2>
+        {phase.sourcePhaseName && <p className="footnote">Copia de «{phase.sourcePhaseName}». Cada fase se guarda por separado.</p>}
         <div className="meal-cards">{phase.meals.map((meal, index) => <article className="meal-card" key={meal.id}><span className="meal-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span><div><h3>{meal.name}</h3><p>{meal.foods}</p></div></article>)}</div>
         {phase.notes && <aside className="diet-notes"><h3>Notas</h3><p>{phase.notes}</p></aside>}
-        <div className="diet-actions"><button className="button" disabled={busy} onClick={() => { setEditor({ phase }); setError(''); setStatus('') }}>Editar fase</button><button className="delete-value" type="button" disabled={busy} onClick={() => void remove(phase)}>{busy ? 'Eliminando…' : 'Eliminar fase'}</button></div>
+        <div className="diet-actions"><button className="button" disabled={busy} onClick={() => { setComparison(undefined); setEditor({ phase }); setError(''); setStatus('') }}>Editar fase</button><button className="outline-button" type="button" disabled={busy} onClick={() => void duplicate(phase)}>{busy ? 'Procesando…' : 'Duplicar fase'}</button><button className="outline-button" type="button" disabled={busy || phases.length < 2} onClick={() => {
+          const reference = phases.find(value => value.id === phase.sourcePhaseId) ?? phases.find(value => value.id !== phase.id)!
+          setComparison({ before: reference.id, after: phase.id }); setStatus(''); setError('')
+        }}>Comparar fases</button><button className="delete-value" type="button" disabled={busy} onClick={() => void remove(phase)}>{busy ? 'Eliminando…' : 'Eliminar fase'}</button></div>
       </section> : <section className="panel diet-empty"><span className="badge">TU PRIMER PLAN</span><h3>Tu dieta, escrita a tu manera.</h3><p>Crea una fase, añade tus comidas y escribe lo que quieres comer en cada una. Se guardará en este dispositivo.</p></section>}
+      {comparison && <DietComparison key={`${comparison.before}-${comparison.after}`} phases={phases} initialBefore={comparison.before} initialAfter={comparison.after} onClose={() => setComparison(undefined)} />}
+      <p className="footnote">Para preparar una nueva versión conservando la anterior, duplica la fase y edita la copia.</p>
       <p className="footnote">Un plan manual de comidas. Las fases son independientes: no tienen activación automática por fecha ni calculan calorías o macros de los alimentos.</p>
     </>}
     {status && <p role="status" className="success feedback">{status}</p>}{error && <p role="alert" className="error feedback">{error}</p>}
