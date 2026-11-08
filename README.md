@@ -6,7 +6,9 @@ El proyecto nace de una hoja de cálculo de Google Sheets utilizada para registr
 
 ## Estado del proyecto
 
-En fase de definición. Este README recoge la visión y el alcance propuesto; las funcionalidades descritas todavía no están implementadas. La tecnología y las instrucciones de instalación se definirán cuando comience el desarrollo.
+Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario, los objetivos, la calculadora y las fases de dieta todavía no están implementados. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
+
+El MVP será de uso personal desde un único teléfono, con almacenamiento local y sin cuentas ni sincronización.
 
 ## Objetivo
 
@@ -81,10 +83,45 @@ Las integraciones dependerán de las APIs, permisos y condiciones de acceso de c
 
 ## Decisiones pendientes
 
-- Elegir el formato de la aplicación: web adaptable al móvil, PWA o aplicación nativa.
-- Definir las tecnologías y el almacenamiento, incluido el posible uso sin conexión.
+- Completar la instalación como PWA y el funcionamiento sin conexión; todavía no están disponibles en esta base técnica.
 - Documentar las fórmulas, unidades y reglas de cálculo de la hoja actual.
 - Diseñar las primeras pantallas y el flujo de registro diario.
 - Concretar cómo trasladar el histórico y cuándo incorporar autenticación e integraciones.
 
 El primer hito propuesto es poder registrar y consultar los datos personales desde el móvil, con persistencia y objetivos editables, como base para ir sustituyendo el uso cotidiano de la hoja de cálculo.
+
+
+## Desarrollo local
+
+Requisitos: Node.js 24 y npm.
+
+```sh
+npm ci
+npm run dev
+```
+
+Abrir la URL indicada por Vite. Para acceder desde el teléfono en la misma red, usar `npm run dev -- --host 0.0.0.0` y la dirección de red indicada. El acceso depende de la red y el cortafuegos del equipo.
+
+```sh
+npm run lint       # Análisis estático
+npm test           # Persistencia y validaciones
+npm run build      # Comprobación de tipos y compilación
+npx playwright install chromium
+npm run test:e2e    # Recorridos en Chromium con tamaño móvil
+npm run preview    # Servir la compilación localmente
+```
+
+### Qué se puede probar ahora
+
+- Navegar por Hoy, Evolución, Dieta y Ajustes. Las secciones futuras se identifican como tales, sin métricas simuladas.
+- En Ajustes, modificar la cantidad del futuro botón rápido de agua, guardarla y recargar para comprobar su persistencia.
+- Ver mensajes de error cuando falla el almacenamiento.
+
+Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usados. Abrir otra URL o borrar los datos del sitio no conserva la misma información. No hay copia de seguridad automática. Los recursos de la aplicación aún necesitan conexión; el soporte sin conexión corresponde al hito H6.
+
+### Organización
+
+- `src/App.tsx`: estructura de navegación y primeras pantallas.
+- `src/data/`: esquema versionado y acceso a IndexedDB, con pruebas.
+- `e2e/`: comprobaciones de navegación, persistencia y errores de escritura.
+- `.github/workflows/ci.yml`: lint, pruebas, compilación y recorridos de navegador.
