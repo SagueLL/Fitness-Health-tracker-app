@@ -1,6 +1,6 @@
 # Plan de construcción del MVP
 
-Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. H3 implementado con objetivos básicos e histórico ampliado: versiones de agua/pasos/sueño/peso, gráficas para las cinco métricas, periodos de 7/30/90 días navegables, resúmenes y tabla con acceso a edición. H4 implementado: primera calculadora Mifflin/PAL/macros con vista previa y objetivos nutricionales versionados. Las fases de dieta y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
+Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. H3 implementado con objetivos básicos e histórico ampliado: versiones de agua/pasos/sueño/peso, gráficas para las cinco métricas, periodos de 7/30/90 días navegables, resúmenes y tabla con acceso a edición. H4 implementado: primera calculadora Mifflin/PAL/macros con vista previa y objetivos nutricionales versionados. Editor manual de fases entregado con alcance simplificado indicado al final. El modo sin conexión sigue pendiente. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
 
 ## 1. Resultado que buscamos
 
@@ -169,3 +169,16 @@ Por indicación del propietario, los objetivos se mantienen básicos y el histó
 - Vista previa, desglose, guardado explícito, vigencia y revisiones conservadas por fecha. Parámetros editables y reutilizables.
 - No se añaden entrenamiento, micronutrientes, adaptación automática ni predicción de peso.
 - Migración v3 a v4 conservando los datos anteriores. Verificado con 22 pruebas de dominio/persistencia, ocho recorridos de navegador, lint y build.
+
+
+## Ajuste de alcance: fases manuales de dieta
+
+Por petición expresa del propietario, se entrega primero una interfaz sencilla y visual dentro de Dieta, sin cálculos sobre alimentos:
+
+- Mi dieta permite crear, consultar y editar fases independientes con nombre, comidas y notas opcionales.
+- Cada comida contiene nombre y texto libre para alimentos y cantidades, sin ingredientes estructurados ni nutrientes.
+- Vista en tarjetas, guardado local, retirada de comidas y eliminación de fases con confirmación. La edición actualiza el plan; no crea revisiones históricas.
+- La calculadora continúa disponible en un segundo apartado dentro de Dieta.
+- No se implementan en esta entrega vigencia por fecha, fase activa, duplicación, comparación, totales de comidas ni conexión de fases con instantáneas nutricionales. Las reglas avanzadas de H5 anteriores quedan aplazadas.
+- Esquema local v5 con migración que conserva registros, preferencias, objetivos e instantáneas nutricionales.
+- Validación: 25 pruebas de dominio/persistencia y 10 recorridos de navegador, además de lint y build.

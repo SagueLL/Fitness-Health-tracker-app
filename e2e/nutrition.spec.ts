@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 async function calculateExample(page: Page) {
-  await page.goto('/#/dieta')
+  await page.goto('/#/dieta/calculadora')
   await expect(page.getByRole('button', { name: 'Calcular estimación' })).toBeEnabled()
   await page.getByLabel('Variante de Mifflin–St Jeor').selectOption('male')
   await page.getByLabel('Peso de cálculo (kg)', { exact: true }).fill('100')

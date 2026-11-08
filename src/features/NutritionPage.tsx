@@ -1,5 +1,4 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { NavLink } from 'react-router-dom'
 import { readNutritionGoals, saveNutritionGoal } from '../data/nutritionRepository'
 import { localDate, parseValue, ValidationError } from '../domain/daily'
 import { calculateNutrition, calories, grams, nutritionForDate, type NutritionGoal, type NutritionInputs, type NutritionResult } from '../domain/nutrition'
@@ -85,7 +84,7 @@ export default function NutritionPage() {
   }
   const current = nutritionForDate(goals, localDate())
   const ordered = [...goals].sort((a, b) => b.effectiveFrom.localeCompare(a.effectiveFrom) || b.revision - a.revision)
-  return <><p className="eyebrow">ENERGÍA CON CONTEXTO</p><h1>Nutrición con intención.</h1><p className="subtitle">Una primera estimación para organizar tu alimentación.</p>
+  return <>
     {current && <section className="panel current-nutrition" aria-labelledby="current-nutrition"><span className="badge">OBJETIVO VIGENTE</span><h2 id="current-nutrition">{phaseLabels[current.inputs.phase]} · desde {shortDate(current.effectiveFrom)}</h2><Result result={current.result} /></section>}
     <section className="panel" aria-labelledby="calculator-title"><h2 id="calculator-title">Calculadora de calorías y macros</h2><p>Mifflin–St Jeor + actividad habitual. Ajusta los parámetros y revisa el cálculo antes de guardarlo.</p>
       <p className="footnote">Orientada a adultos. La fórmula general no está diseñada para embarazo, lactancia ni necesidades clínicas específicas. El resultado es una estimación, no una medición de tu gasto.</p>
@@ -110,6 +109,6 @@ export default function NutritionPage() {
       <Result result={goal.result} /><p className="footnote">Peso: {goal.inputs.weightKg} kg · Altura: {goal.inputs.heightCm} cm · Edad: {goal.inputs.age} · Variante: {goal.inputs.equation === 'male' ? 'masculina' : 'femenina'} · PAL: {goal.inputs.pal}. Proteína: {goal.inputs.proteinPerKg} g/kg; grasa: {goal.inputs.fatPerKg} g/kg. Ajuste: {goal.inputs.adjustment} {goal.inputs.adjustmentMode === 'percent' ? '%' : 'kcal'}. Método: {goal.formulaVersion}. Calculado: {new Date(goal.createdAt).toLocaleString('es')}.</p>
       <button type="button" className="text-link discard" disabled={saving} onClick={() => { setFields(fieldsFrom(goal.inputs)); setPreview(undefined); setStatus('Parámetros cargados. Revisa el formulario y calcula para crear otro objetivo.'); setError('') }}>Usar estos parámetros</button>
     </details>)}</div></section>}
-    <section className="panel"><span className="badge">SIGUIENTE ETAPA</span><h2>Tu plan de comidas</h2><p>Las fases de dieta, comidas e ingredientes llegarán en el siguiente hito. Esta calculadora guarda objetivos, no alimentos consumidos.</p><NavLink to="/evolucion" className="text-link">Consultar mi evolución →</NavLink></section>
+
   </>
 }

@@ -6,7 +6,7 @@ El proyecto nace de una hoja de cálculo de Google Sheets utilizada para registr
 
 ## Estado del proyecto
 
-Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario ya permite guardar y corregir agua, sueño, pasos y peso por fecha. Los objetivos básicos y el histórico con gráficas ya están implementados. La primera calculadora de calorías/macros está disponible en Dieta. Las fases de dieta siguen pendientes. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
+Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario ya permite guardar y corregir agua, sueño, pasos y peso por fecha. Los objetivos básicos y el histórico con gráficas ya están implementados. La primera calculadora de calorías/macros está disponible en Dieta. Las fases manuales de dieta ya permiten crear y editar comidas en texto libre. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
 
 El MVP será de uso personal desde un único teléfono, con almacenamiento local y sin cuentas ni sincronización.
 
@@ -122,10 +122,11 @@ npm run preview    # Servir la compilación localmente
 - En Evolución, seleccionar métrica, periodos de 7/30/90 días y fecha final; navegar por periodos anteriores y siguientes.
 - Consultar gráficas interactivas, medias, cobertura, rango y tabla de registros con enlaces para editar cada fecha. Para peso se muestran el cambio entre primer y último registro y una media móvil de siete días naturales.
 - Comparar con los objetivos vigentes cada día. Agua, pasos y sueño tienen comparación de cumplimiento; el peso solo tiene una referencia visual. La puntuación del sueño no tiene objetivo.
-- En Dieta, calcular reposo con Mifflin–St Jeor, mantenimiento mediante PAL y calorías para mantenimiento, definición o volumen. El ajuste puede ser porcentual o en kcal.
+- En Dieta → Mi dieta, crear fases con nombre, comidas y notas; escribir alimentos y cantidades en texto libre, editar y consultar fases independientes. El plan se presenta en tarjetas y no calcula nutrientes de los alimentos.
+- En Dieta → Calculadora, calcular reposo con Mifflin–St Jeor, mantenimiento mediante PAL y calorías para mantenimiento, definición o volumen. El ajuste puede ser porcentual o en kcal.
 - Elegir proteína y grasa en g/kg del peso de cálculo; los hidratos se calculan con las calorías restantes. Ver el desglose y avisos antes de guardar.
 - Guardar objetivos nutricionales con fecha de inicio hoy o futura, consultar las revisiones y reutilizar parámetros. Las revisiones anteriores no se borran.
-- La calculadora no añade calorías de pasos/ejercicio sobre PAL ni recalcula objetivos al registrar peso. Las fases de dieta y comidas siguen pendientes.
+- La calculadora no añade calorías de pasos/ejercicio sobre PAL ni recalcula objetivos al registrar peso. El plan manual de comidas es independiente de los objetivos nutricionales.
 - Consultar las fórmulas, ejemplos y límites en [docs/FORMULAS_NUTRICION.md](docs/FORMULAS_NUTRICION.md).
 - Ver mensajes de error cuando falla el almacenamiento.
 
@@ -139,6 +140,13 @@ Los recursos de la aplicación aún necesitan conexión; el soporte sin conexió
 - `src/data/`: esquema versionado y repositorios de IndexedDB, con migración v1 a v2 que conserva las preferencias.
 - `src/domain/`: reglas de fechas, valores y validación.
 - `src/features/`: registro diario, objetivos básicos e histórico con gráficas SVG y tabla accesible.
-- El esquema local v4 añade instantáneas nutricionales por fecha y revisión, conservando los datos de versiones anteriores.
+- El esquema local v5 añade fases manuales con comidas y notas, conservando registros, objetivos y calculadora de versiones anteriores.
 - `e2e/`: comprobaciones de navegación, persistencia y errores de escritura.
 - `.github/workflows/ci.yml`: lint, pruebas, compilación y recorridos de navegador.
+
+
+### Fases manuales de dieta
+
+En la pestaña Dieta hay dos apartados: **Mi dieta** (`/#/dieta`) y **Calculadora** (`/#/dieta/calculadora`). Cada fase guarda un nombre, una lista de comidas y notas opcionales. Cada comida tiene un nombre y un texto libre para alimentos, cantidades y alternativas. Se conserva el orden de introducción y los saltos de línea.
+
+La edición actualiza la fase seleccionada, sin crear un historial de revisiones de comidas. Se pueden quitar comidas del formulario y eliminar fases con confirmación. Los cambios solo se aplican al guardar; Cancelar permite descartarlos. No hay activación por fecha, catálogo de alimentos, cálculo nutricional, comparación automática de fases ni registro de consumo. Este alcance simplificado sustituye para esta entrega al editor avanzado inicialmente propuesto.

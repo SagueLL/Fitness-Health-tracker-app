@@ -1,3 +1,4 @@
+import type { DietPhase } from '../domain/diet'
 import type { NutritionGoal } from '../domain/nutrition'
 import type { Goals } from '../domain/goals'
 import Dexie, { type EntityTable } from 'dexie'
@@ -23,6 +24,7 @@ export class AppDatabase extends Dexie {
   dailyRecords!: EntityTable<DailyRecord, 'date'>
   goals!: EntityTable<Goals, 'effectiveFrom'>
   nutritionGoals!: EntityTable<NutritionGoal, 'id'>
+  dietPhases!: EntityTable<DietPhase, 'id'>
 
   constructor(name = 'fitness-health-tracker') {
     super(name)
@@ -30,6 +32,7 @@ export class AppDatabase extends Dexie {
     this.version(2).stores({ dailyRecords: '&date' })
     this.version(3).stores({ goals: '&effectiveFrom' })
     this.version(4).stores({ nutritionGoals: 'id, effectiveFrom, &[effectiveFrom+revision]' })
+    this.version(5).stores({ dietPhases: 'id, updatedAt' })
   }
 }
 

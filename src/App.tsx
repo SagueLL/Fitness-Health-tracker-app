@@ -5,7 +5,7 @@ import './App.css'
 import DailyPage from './features/DailyPage'
 import GoalsForm from './features/GoalsForm'
 import HistoryPage from './features/HistoryPage'
-import NutritionPage from './features/NutritionPage'
+import DietPage from './features/DietPage'
 
 const sections = [
   { path: '/', label: 'Hoy', icon: '◷' },
@@ -66,10 +66,10 @@ export default function App() {
       <main id="main" tabIndex={-1}><Routes>
         <Route path="/" element={<DailyPage />} />
         <Route path="/evolucion" element={<HistoryPage />} />
-        <Route path="/dieta" element={<NutritionPage />} />
+        <Route path="/dieta/*" element={<DietPage />} />
         <Route path="/ajustes" element={<Settings />} />
         <Route path="*" element={<Upcoming title="Página no encontrada." description="Puedes volver a tu espacio desde la navegación." />} />
       </Routes></main>
-      <nav className="bottom-nav" aria-label="Navegación principal">{sections.map(section => <NavLink key={section.path} to={section.path} end><span aria-hidden="true">{section.icon}</span>{section.label}</NavLink>)}</nav>
+      <nav className="bottom-nav" aria-label="Navegación principal">{sections.map(section => <NavLink key={section.path} to={section.path} end={section.path !== '/dieta'}><span aria-hidden="true">{section.icon}</span>{section.label}</NavLink>)}</nav>
     </div></HashRouter>
 }
