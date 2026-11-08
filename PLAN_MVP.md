@@ -1,6 +1,6 @@
 # Plan de construcción del MVP
 
-Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. Los objetivos, el histórico con gráficas, la nutrición y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
+Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. H3 implementado con objetivos básicos e histórico ampliado: versiones de agua/pasos/sueño/peso, gráficas para las cinco métricas, periodos de 7/30/90 días navegables, resúmenes y tabla con acceso a edición. La nutrición y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
 
 ## 1. Resultado que buscamos
 
@@ -146,3 +146,16 @@ No se fija una fecha de entrega sin conocer la disponibilidad y haber resuelto l
 4. **Copia de seguridad:** sigue fuera del alcance inicial según el README. La aceptación del almacenamiento local no implica que exista recuperación automática; copia/restauración se puede priorizar como mejora posterior sin cambiar la arquitectura local.
 
 Estas decisiones no autorizan publicación ni conexión con servicios externos; concretan el trabajo que debe construirse y revisarse antes de entregar la aplicación.
+
+
+## Ajuste de alcance de H3
+
+Por indicación del propietario, los objetivos se mantienen básicos y el histórico recibe más desarrollo:
+
+- Objetivos opcionales de agua, pasos y duración del sueño; peso como referencia visual, sin valoración de cumplimiento. No se incorpora variación semanal deseada ni automatización.
+- Versiones completas con inicio hoy o futuro. Un cambio no altera los objetivos de fechas anteriores; sustituir la misma fecha requiere confirmación.
+- Histórico de las cinco métricas, con periodos de 7, 30 y 90 días, fecha final y navegación por periodos.
+- Gráficas SVG con detalle por punto, huecos sin interpolación para datos ausentes, objetivo vigente por día y media móvil de peso de siete días naturales.
+- Media y cobertura, rango registrado, cumplimiento para agua/pasos/sueño y diferencia entre primer y último peso del periodo. La comparación de medias entre semanas queda aplazada.
+- Tabla accesible por fecha y enlace para corregir registros. No hay registros de demostración en la aplicación.
+- Migración local v2 a v3 verificada sin pérdida de registros ni preferencias. Validación: 14 pruebas de dominio/persistencia y 6 recorridos en Chromium móvil, más lint y compilación.

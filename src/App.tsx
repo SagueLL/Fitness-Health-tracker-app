@@ -3,6 +3,8 @@ import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
 import { readPreferences, savePreferences } from './data/database'
 import './App.css'
 import DailyPage from './features/DailyPage'
+import GoalsForm from './features/GoalsForm'
+import HistoryPage from './features/HistoryPage'
 
 const sections = [
   { path: '/', label: 'Hoy', icon: '◷' },
@@ -50,6 +52,7 @@ function Settings() {
       </form>
       <p role="status" className="success">{status}</p>{error && <p role="alert" className="error">{error}</p>}
     </section>
+    <GoalsForm />
     <section className="panel storage"><span className="badge">SOLO EN TU TELÉFONO</span><h2>Tú tienes tus datos.</h2>
       <p>La información se guarda en este navegador. Esta versión no utiliza cuentas ni envía tus registros a un servidor.</p>
       <p>Si borras los datos del sitio o cambias de navegador o dispositivo, no podrás recuperarlos automáticamente. Las copias de seguridad están previstas para más adelante.</p>
@@ -61,7 +64,7 @@ export default function App() {
     <div className="app-shell"><header className="brand"><NavLink to="/" aria-label="Fitness & Health, inicio"><span className="brand-mark" aria-hidden="true">f.</span><span>fitness <span className="brand-light">& health</span></span></NavLink><span className="personal-label">PERSONAL</span></header>
       <main id="main" tabIndex={-1}><Routes>
         <Route path="/" element={<DailyPage />} />
-        <Route path="/evolucion" element={<Upcoming title="Tu evolución." description="Una perspectiva de tus hábitos a lo largo del tiempo." />} />
+        <Route path="/evolucion" element={<HistoryPage />} />
         <Route path="/dieta" element={<Upcoming title="Nutrición con intención." description="Tus objetivos y fases de dieta, organizados." />} />
         <Route path="/ajustes" element={<Settings />} />
         <Route path="*" element={<Upcoming title="Página no encontrada." description="Puedes volver a tu espacio desde la navegación." />} />

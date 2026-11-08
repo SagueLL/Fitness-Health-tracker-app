@@ -6,7 +6,7 @@ El proyecto nace de una hoja de cálculo de Google Sheets utilizada para registr
 
 ## Estado del proyecto
 
-Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario ya permite guardar y corregir agua, sueño, pasos y peso por fecha. Los objetivos, la calculadora y las fases de dieta todavía no están implementados. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
+Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario ya permite guardar y corregir agua, sueño, pasos y peso por fecha. Los objetivos básicos y el histórico con gráficas ya están implementados. La calculadora y las fases de dieta siguen pendientes. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
 
 El MVP será de uso personal desde un único teléfono, con almacenamiento local y sin cuentas ni sincronización.
 
@@ -117,16 +117,24 @@ npm run preview    # Servir la compilación localmente
 - Editar los valores, borrar cada métrica con confirmación y comprobar su persistencia al recargar. Los campos vacíos son datos ausentes; cero es un valor registrado.
 - Usar coma o punto decimal, sin separadores de miles. Los pasos y la duración del sueño se introducen como enteros.
 - Añadir agua rápidamente a la fecha seleccionada. En Ajustes se configura la cantidad por pulsación.
-- Navegar por Evolución y Dieta, identificadas como secciones futuras, sin métricas simuladas.
+- En Ajustes, configurar objetivos opcionales de agua, pasos, duración del sueño y peso de referencia. Cada versión empieza hoy o en una fecha futura; sustituir una versión con la misma fecha requiere confirmación. Dejar un objetivo vacío lo desactiva desde esa fecha.
+- En Hoy, consultar los objetivos correspondientes a la fecha seleccionada.
+- En Evolución, seleccionar métrica, periodos de 7/30/90 días y fecha final; navegar por periodos anteriores y siguientes.
+- Consultar gráficas interactivas, medias, cobertura, rango y tabla de registros con enlaces para editar cada fecha. Para peso se muestran el cambio entre primer y último registro y una media móvil de siete días naturales.
+- Comparar con los objetivos vigentes cada día. Agua, pasos y sueño tienen comparación de cumplimiento; el peso solo tiene una referencia visual. La puntuación del sueño no tiene objetivo.
+- Dieta continúa identificada como sección futura, sin métricas simuladas.
 - Ver mensajes de error cuando falla el almacenamiento.
 
-Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usados. Abrir otra URL o borrar los datos del sitio no conserva la misma información. No hay copia de seguridad automática. Los recursos de la aplicación aún necesitan conexión; el soporte sin conexión corresponde al hito H6.
+Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usados. Abrir otra URL o borrar los datos del sitio no conserva la misma información. No hay copia de seguridad automática. Las gráficas no conectan los días sin registros; las medias excluyen los datos ausentes e incluyen los ceros. La media móvil del peso utiliza solo los registros de los últimos siete días naturales, incluidos los anteriores al periodo visible cuando corresponde. El cambio de peso del periodo no se presenta como una tasa semanal.
+
+Los recursos de la aplicación aún necesitan conexión; el soporte sin conexión corresponde al hito H6.
 
 ### Organización
 
 - `src/App.tsx`: estructura de navegación y primeras pantallas.
 - `src/data/`: esquema versionado y repositorios de IndexedDB, con migración v1 a v2 que conserva las preferencias.
 - `src/domain/`: reglas de fechas, valores y validación.
-- `src/features/DailyPage.tsx`: formulario diario y acceso rápido de agua.
+- `src/features/`: registro diario, objetivos básicos e histórico con gráficas SVG y tabla accesible.
+- El esquema local v3 añade objetivos por fecha y conserva registros y preferencias existentes.
 - `e2e/`: comprobaciones de navegación, persistencia y errores de escritura.
 - `.github/workflows/ci.yml`: lint, pruebas, compilación y recorridos de navegador.

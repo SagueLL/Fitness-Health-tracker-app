@@ -1,7 +1,11 @@
+import { useSearchParams } from 'react-router-dom'
 import { useEffect, useState, type FormEvent } from 'react'
+import { readGoals } from '../data/historyRepository'
+import { goalForDate, type Goals } from '../domain/goals'
+import { formatValue } from '../domain/history'
 import { readPreferences, type DailyRecord } from '../data/database'
 import { addWater, readDaily, saveDaily } from '../data/dailyRepository'
-import { localDate, metrics, parseValue, ValidationError, valuesOf, type Metric } from '../domain/daily'
+import { localDate, validateDate, metrics, parseValue, ValidationError, valuesOf, type Metric } from '../domain/daily'
 
 type Fields = Record<Metric, string>
 function fieldsOf(record?: DailyRecord): Fields {
@@ -12,6 +16,7 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
   const [record, setRecord] = useState<DailyRecord>()
   const [fields, setFields] = useState(() => fieldsOf())
   const [shortcut, setShortcut] = useState(250)
+  const [goals, setGoals] = useState<Goals>()
   const [loading, setLoading] = useState(true)
   const [ready, setReady] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -22,8 +27,8 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
   useEffect(() => { onDirty(dirty) }, [dirty, onDirty])
   useEffect(() => {
     let active = true
-    Promise.all([readDaily(date), readPreferences()]).then(([value, preferences]) => {
-      if (active) { setRecord(value); setFields(fieldsOf(value)); setShortcut(preferences.waterShortcutMl); setReady(true); setLoading(false) }
+    Promise.all([readDaily(date), readPreferences(), readGoals()]).then(([value, preferences, versions]) => {
+      if (active) { setGoals(goalForDate(versions, date)); setRecord(value); setFields(fieldsOf(value)); setShortcut(preferences.waterShortcutMl); setReady(true); setLoading(false) }
     }).catch(() => { if (active) { setError('No se pudieron cargar tus datos. Vuelve a intentarlo.'); setLoading(false) } })
     return () => { active = false }
   }, [date, attempt])
@@ -57,6 +62,7 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
           <div className="daily-fields">
             {metrics.map(metric => <div className="daily-field" key={metric.key}>
               <label htmlFor={metric.key}>{metric.label} ({metric.unit})</label>
+              {metric.key !== 'sleepScore' && goals?.[metric.key] !== undefined && <p className="footnote">{metric.key === 'weightKg' ? 'Peso de referencia' : 'Objetivo'}: {formatValue(goals[metric.key], metric.key)}{record?.[metric.key] !== undefined && metric.key !== 'weightKg' ? ` · ${Math.round(record[metric.key]! / goals[metric.key]! * 100)} % guardado` : ''}</p>}
               <div className="field-controls">
                 <input id={metric.key} type="text" inputMode={metric.integer ? 'numeric' : 'decimal'} autoComplete="off" placeholder="Sin registrar" value={fields[metric.key]} onChange={event => { setFields({ ...fields, [metric.key]: event.target.value }); setStatus(''); setError('') }} />
                 {record?.[metric.key] !== undefined && <button type="button" className="delete-value" aria-label={`Borrar ${metric.label.toLowerCase()}`} onClick={() => {
@@ -83,7 +89,12 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
 }
 
 export default function DailyPage() {
-  const [date, setDate] = useState(localDate)
+  const [params] = useSearchParams()
+  const [date, setDate] = useState(() => {
+    const requested = params.get('date')
+    if (requested) { try { validateDate(requested); return requested } catch { /* Fall back to today for invalid links. */ } }
+    return localDate()
+  })
   const [dirty, setDirty] = useState(false)
   useEffect(() => {
     if (!dirty) return

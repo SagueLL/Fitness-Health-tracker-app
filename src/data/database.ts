@@ -1,3 +1,4 @@
+import type { Goals } from '../domain/goals'
 import Dexie, { type EntityTable } from 'dexie'
 
 export interface Preferences {
@@ -19,11 +20,13 @@ export interface DailyRecord {
 export class AppDatabase extends Dexie {
   preferences!: EntityTable<Preferences, 'id'>
   dailyRecords!: EntityTable<DailyRecord, 'date'>
+  goals!: EntityTable<Goals, 'effectiveFrom'>
 
   constructor(name = 'fitness-health-tracker') {
     super(name)
     this.version(1).stores({ preferences: '&id' })
     this.version(2).stores({ dailyRecords: '&date' })
+    this.version(3).stores({ goals: '&effectiveFrom' })
   }
 }
 
