@@ -1,6 +1,6 @@
 # Plan de construcción del MVP
 
-Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. H3 implementado con objetivos básicos e histórico ampliado: versiones de agua/pasos/sueño/peso, gráficas para las cinco métricas, periodos de 7/30/90 días navegables, resúmenes y tabla con acceso a edición. La nutrición y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
+Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. H3 implementado con objetivos básicos e histórico ampliado: versiones de agua/pasos/sueño/peso, gráficas para las cinco métricas, periodos de 7/30/90 días navegables, resúmenes y tabla con acceso a edición. H4 implementado: primera calculadora Mifflin/PAL/macros con vista previa y objetivos nutricionales versionados. Las fases de dieta y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
 
 ## 1. Resultado que buscamos
 
@@ -159,3 +159,13 @@ Por indicación del propietario, los objetivos se mantienen básicos y el histó
 - Media y cobertura, rango registrado, cumplimiento para agua/pasos/sueño y diferencia entre primer y último peso del periodo. La comparación de medias entre semanas queda aplazada.
 - Tabla accesible por fecha y enlace para corregir registros. No hay registros de demostración en la aplicación.
 - Migración local v2 a v3 verificada sin pérdida de registros ni preferencias. Validación: 14 pruebas de dominio/persistencia y 6 recorridos en Chromium móvil, más lint y compilación.
+
+
+## Primera calculadora entregada (H4)
+
+- Núcleo autorizado a partir del PDF aportado por el propietario; fórmulas y decisiones en [docs/FORMULAS_NUTRICION.md](docs/FORMULAS_NUTRICION.md). No se presupone equivalencia con la hoja original, cuyas fórmulas concretas no se han facilitado.
+- Mifflin–St Jeor (dos variantes), PAL que incluye actividad, mantenimiento/definición/volumen y ajuste en porcentaje o kcal.
+- Proteína y grasa por kg de peso de cálculo; hidratos restantes, validación de coherencia y precisión completa en almacenamiento.
+- Vista previa, desglose, guardado explícito, vigencia y revisiones conservadas por fecha. Parámetros editables y reutilizables.
+- No se añaden entrenamiento, micronutrientes, adaptación automática ni predicción de peso.
+- Migración v3 a v4 conservando los datos anteriores. Verificado con 22 pruebas de dominio/persistencia, ocho recorridos de navegador, lint y build.

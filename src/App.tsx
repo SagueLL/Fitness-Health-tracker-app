@@ -5,6 +5,7 @@ import './App.css'
 import DailyPage from './features/DailyPage'
 import GoalsForm from './features/GoalsForm'
 import HistoryPage from './features/HistoryPage'
+import NutritionPage from './features/NutritionPage'
 
 const sections = [
   { path: '/', label: 'Hoy', icon: '◷' },
@@ -65,7 +66,7 @@ export default function App() {
       <main id="main" tabIndex={-1}><Routes>
         <Route path="/" element={<DailyPage />} />
         <Route path="/evolucion" element={<HistoryPage />} />
-        <Route path="/dieta" element={<Upcoming title="Nutrición con intención." description="Tus objetivos y fases de dieta, organizados." />} />
+        <Route path="/dieta" element={<NutritionPage />} />
         <Route path="/ajustes" element={<Settings />} />
         <Route path="*" element={<Upcoming title="Página no encontrada." description="Puedes volver a tu espacio desde la navegación." />} />
       </Routes></main>
