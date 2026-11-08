@@ -6,7 +6,7 @@ El proyecto nace de una hoja de cálculo de Google Sheets utilizada para registr
 
 ## Estado del proyecto
 
-Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario, los objetivos, la calculadora y las fases de dieta todavía no están implementados. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
+Base técnica inicial en desarrollo: React, TypeScript y Vite, navegación móvil y preferencias locales en IndexedDB con Dexie. El registro diario ya permite guardar y corregir agua, sueño, pasos y peso por fecha. Los objetivos, la calculadora y las fases de dieta todavía no están implementados. El alcance y el orden de construcción están documentados en [PLAN_MVP.md](PLAN_MVP.md).
 
 El MVP será de uso personal desde un único teléfono, con almacenamiento local y sin cuentas ni sincronización.
 
@@ -113,8 +113,11 @@ npm run preview    # Servir la compilación localmente
 
 ### Qué se puede probar ahora
 
-- Navegar por Hoy, Evolución, Dieta y Ajustes. Las secciones futuras se identifican como tales, sin métricas simuladas.
-- En Ajustes, modificar la cantidad del futuro botón rápido de agua, guardarla y recargar para comprobar su persistencia.
+- En Hoy, seleccionar hoy o una fecha anterior y registrar agua (ml), sueño (duración en minutos y puntuación de 0 a 100), pasos y peso (kg).
+- Editar los valores, borrar cada métrica con confirmación y comprobar su persistencia al recargar. Los campos vacíos son datos ausentes; cero es un valor registrado.
+- Usar coma o punto decimal, sin separadores de miles. Los pasos y la duración del sueño se introducen como enteros.
+- Añadir agua rápidamente a la fecha seleccionada. En Ajustes se configura la cantidad por pulsación.
+- Navegar por Evolución y Dieta, identificadas como secciones futuras, sin métricas simuladas.
 - Ver mensajes de error cuando falla el almacenamiento.
 
 Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usados. Abrir otra URL o borrar los datos del sitio no conserva la misma información. No hay copia de seguridad automática. Los recursos de la aplicación aún necesitan conexión; el soporte sin conexión corresponde al hito H6.
@@ -122,6 +125,8 @@ Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usad
 ### Organización
 
 - `src/App.tsx`: estructura de navegación y primeras pantallas.
-- `src/data/`: esquema versionado y acceso a IndexedDB, con pruebas.
+- `src/data/`: esquema versionado y repositorios de IndexedDB, con migración v1 a v2 que conserva las preferencias.
+- `src/domain/`: reglas de fechas, valores y validación.
+- `src/features/DailyPage.tsx`: formulario diario y acceso rápido de agua.
 - `e2e/`: comprobaciones de navegación, persistencia y errores de escritura.
 - `.github/workflows/ci.yml`: lint, pruebas, compilación y recorridos de navegador.

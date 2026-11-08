@@ -1,0 +1,115 @@
+import { useEffect, useState, type FormEvent } from 'react'
+import { readPreferences, type DailyRecord } from '../data/database'
+import { addWater, readDaily, saveDaily } from '../data/dailyRepository'
+import { localDate, metrics, parseValue, ValidationError, valuesOf, type Metric } from '../domain/daily'
+
+type Fields = Record<Metric, string>
+function fieldsOf(record?: DailyRecord): Fields {
+  return Object.fromEntries(metrics.map(({ key }) => [key, record?.[key]?.toString().replace('.', ',') ?? ''])) as Fields
+}
+
+function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean) => void }) {
+  const [record, setRecord] = useState<DailyRecord>()
+  const [fields, setFields] = useState(() => fieldsOf())
+  const [shortcut, setShortcut] = useState(250)
+  const [loading, setLoading] = useState(true)
+  const [ready, setReady] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [status, setStatus] = useState('')
+  const [attempt, setAttempt] = useState(0)
+  const dirty = metrics.some(({ key }) => fields[key] !== fieldsOf(record)[key])
+  useEffect(() => { onDirty(dirty) }, [dirty, onDirty])
+  useEffect(() => {
+    let active = true
+    Promise.all([readDaily(date), readPreferences()]).then(([value, preferences]) => {
+      if (active) { setRecord(value); setFields(fieldsOf(value)); setShortcut(preferences.waterShortcutMl); setReady(true); setLoading(false) }
+    }).catch(() => { if (active) { setError('No se pudieron cargar tus datos. Vuelve a intentarlo.'); setLoading(false) } })
+    return () => { active = false }
+  }, [date, attempt])
+
+  async function persist(action: () => Promise<DailyRecord | undefined>, message: string) {
+    setSaving(true); setError(''); setStatus('')
+    try {
+      const saved = await action()
+      setRecord(saved); setFields(fieldsOf(saved)); onDirty(false); setStatus(message)
+    } catch (cause) {
+      setError(cause instanceof ValidationError ? cause.message : 'No se pudo guardar. Tus cambios siguen en el formulario; vuelve a intentarlo.')
+    } finally { setSaving(false) }
+  }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    try {
+      const values = Object.fromEntries(metrics.map(({ key }) => [key, parseValue(fields[key])]))
+      const removed = metrics.some(({ key }) => record?.[key] !== undefined && values[key] === undefined)
+      if (removed && !window.confirm('Se borrarán los valores que has dejado vacíos. ¿Guardar los cambios?')) return
+      void persist(() => saveDaily(date, values), 'Registro guardado en este dispositivo.')
+    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Revisa los valores.'); setStatus('') }
+  }
+  return <>
+    <section className="panel" aria-labelledby="daily-title">
+      <h2 id="daily-title">Tu registro diario</h2>
+      <p>Deja vacío lo que no hayas registrado. Un cero es un valor registrado.</p>
+      {loading && <p role="status">Cargando registro…</p>}
+      {!ready && !loading && <button className="button" onClick={() => { setLoading(true); setError(''); setAttempt(value => value + 1) }}>Volver a intentar</button>}
+      <form onSubmit={submit}>
+        <fieldset disabled={loading || saving || !ready}>
+          <div className="daily-fields">
+            {metrics.map(metric => <div className="daily-field" key={metric.key}>
+              <label htmlFor={metric.key}>{metric.label} ({metric.unit})</label>
+              <div className="field-controls">
+                <input id={metric.key} type="text" inputMode={metric.integer ? 'numeric' : 'decimal'} autoComplete="off" placeholder="Sin registrar" value={fields[metric.key]} onChange={event => { setFields({ ...fields, [metric.key]: event.target.value }); setStatus(''); setError('') }} />
+                {record?.[metric.key] !== undefined && <button type="button" className="delete-value" aria-label={`Borrar ${metric.label.toLowerCase()}`} onClick={() => {
+                  if (window.confirm(`¿Borrar ${metric.label.toLowerCase()} de esta fecha? Los otros valores guardados se conservarán.`)) {
+                    void persist(() => saveDaily(date, { ...valuesOf(record), [metric.key]: undefined }), 'Valor borrado. Los demás datos guardados se conservan.')
+                  }
+                }} disabled={dirty}>Borrar</button>}
+              </div>
+            </div>)}
+          </div>
+          <button className="button" type="submit">{saving ? 'Guardando…' : 'Guardar registro'}</button>
+        </fieldset>
+      </form>
+      <p role="status" className="success">{status}</p>
+      {error && <p role="alert" className="error">{error}</p>}
+    </section>
+    <section className="panel water-quick"><h2>Un poco más de agua</h2>
+      <p>Total guardado: <strong>{record?.waterMl === undefined ? 'Sin registrar' : `${record.waterMl.toLocaleString('es')} ml`}</strong></p>
+      <button className="button" disabled={!ready || loading || saving || dirty} onClick={() => void persist(() => addWater(date, shortcut), 'Agua añadida al registro de esta fecha.')}>Añadir {shortcut} ml de agua</button>
+      {dirty && <p className="footnote">Guarda o descarta los cambios antes de añadir agua o borrar un valor.</p>}
+    </section>
+    {dirty && <button className="text-link discard" disabled={saving} onClick={() => { if (window.confirm('¿Descartar los cambios sin guardar?')) { setFields(fieldsOf(record)); setError(''); setStatus('Cambios descartados.') } }}>Descartar cambios</button>}
+  </>
+}
+
+export default function DailyPage() {
+  const [date, setDate] = useState(localDate)
+  const [dirty, setDirty] = useState(false)
+  useEffect(() => {
+    if (!dirty) return
+    const beforeUnload = (event: BeforeUnloadEvent) => { event.preventDefault() }
+    const navigation = (event: MouseEvent) => {
+      const anchor = event.target instanceof Element ? event.target.closest('a') : null
+      if (anchor && !window.confirm('Tienes cambios sin guardar. ¿Descartarlos y salir?')) {
+        event.preventDefault(); event.stopPropagation()
+      }
+    }
+    window.addEventListener('beforeunload', beforeUnload)
+    document.addEventListener('click', navigation, true)
+    return () => {
+      window.removeEventListener('beforeunload', beforeUnload)
+      document.removeEventListener('click', navigation, true)
+    }
+  }, [dirty])
+  return <><p className="eyebrow">TU ESPACIO PERSONAL</p><h1>Un día a la vez.</h1>
+    <p className="subtitle">Registra tus hábitos de hoy o completa un día anterior.</p>
+    <div className="date-picker"><label htmlFor="record-date">Fecha del registro</label>
+      <input id="record-date" type="date" value={date} max={localDate()} required onChange={event => {
+        if (!event.target.value || event.target.value > localDate()) return
+        if (dirty && !window.confirm('Tienes cambios sin guardar. ¿Descartarlos y cambiar de fecha?')) return
+        setDirty(false); setDate(event.target.value)
+      }} />
+    </div>
+    <DailyEditor key={date} date={date} onDirty={setDirty} />
+  </>
+}

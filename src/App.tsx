@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { HashRouter, NavLink, Route, Routes } from 'react-router-dom'
 import { readPreferences, savePreferences } from './data/database'
 import './App.css'
+import DailyPage from './features/DailyPage'
 
 const sections = [
   { path: '/', label: 'Hoy', icon: '◷' },
@@ -9,33 +10,6 @@ const sections = [
   { path: '/dieta', label: 'Dieta', icon: '≋' },
   { path: '/ajustes', label: 'Ajustes', icon: '⚙' },
 ]
-
-function Today() {
-  const [date] = useState(() => new Intl.DateTimeFormat('es', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date()))
-  return <>
-    <p className="eyebrow">TU ESPACIO PERSONAL</p>
-    <h1>Un día a la vez.</h1>
-    <p className="subtitle date">{date}</p>
-    <section className="welcome" aria-labelledby="welcome-title">
-      <span className="badge">EL PUNTO DE PARTIDA</span>
-      <h2 id="welcome-title">Tus hábitos, en un mismo lugar.</h2>
-      <p>Agua, descanso, movimiento y nutrición. Estamos preparando tu espacio para seguir lo que te importa.</p>
-      <NavLink className="button" to="/ajustes">Configurar mi espacio <span aria-hidden="true">→</span></NavLink>
-    </section>
-    <div className="section-heading"><h2>Tu seguimiento diario</h2><span>Próximamente</span></div>
-    <div className="metrics">
-      {[
-        ['Agua', 'Hidratación diaria', 'ml', 'blue'],
-        ['Sueño', 'Tiempo y calidad', 'h', 'purple'],
-        ['Pasos', 'Movimiento cotidiano', 'pasos', 'orange'],
-        ['Peso', 'Evolución personal', 'kg', 'green'],
-      ].map(([name, description, unit, color]) => <article className={`metric ${color}`} key={name}>
-        <h3>{name}</h3><p className="metric-value">— <small>{unit}</small></p><p>{description}</p>
-      </article>)}
-    </div>
-    <p className="footnote">El registro de métricas llegará en el siguiente hito. Todavía no hay datos de salud guardados.</p>
-  </>
-}
 
 function Upcoming({ title, description }: { title: string; description: string }) {
   return <><p className="eyebrow">PASO A PASO</p><h1>{title}</h1><p className="subtitle">{description}</p>
@@ -68,7 +42,7 @@ function Settings() {
     } finally { setSaving(false) }
   }
   return <><p className="eyebrow">A TU MANERA</p><h1>Tu espacio.</h1><p className="subtitle">Pequeños ajustes para tu día a día.</p>
-    <section className="panel"><h2>Registro rápido de agua</h2><p>Elige cuánto añadirá cada pulsación cuando esté disponible el registro diario.</p>
+    <section className="panel"><h2>Registro rápido de agua</h2><p>Elige cuánto añade cada pulsación al registro diario.</p>
       <form onSubmit={handleSubmit}>
         <label htmlFor="water">Cantidad por pulsación (ml)</label>
         <input id="water" type="number" inputMode="numeric" min="1" max="2000" step="1" required value={amount} disabled={loading || saving} onChange={event => { setAmount(event.target.value); setStatus('') }} />
@@ -86,7 +60,7 @@ export default function App() {
   return <HashRouter><a className="skip-link" href="#main">Saltar al contenido</a>
     <div className="app-shell"><header className="brand"><NavLink to="/" aria-label="Fitness & Health, inicio"><span className="brand-mark" aria-hidden="true">f.</span><span>fitness <span className="brand-light">& health</span></span></NavLink><span className="personal-label">PERSONAL</span></header>
       <main id="main" tabIndex={-1}><Routes>
-        <Route path="/" element={<Today />} />
+        <Route path="/" element={<DailyPage />} />
         <Route path="/evolucion" element={<Upcoming title="Tu evolución." description="Una perspectiva de tus hábitos a lo largo del tiempo." />} />
         <Route path="/dieta" element={<Upcoming title="Nutrición con intención." description="Tus objetivos y fases de dieta, organizados." />} />
         <Route path="/ajustes" element={<Settings />} />

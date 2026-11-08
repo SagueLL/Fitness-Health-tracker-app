@@ -1,6 +1,6 @@
 # Plan de construcción del MVP
 
-Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. El registro diario y el resto de funciones siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
+Estado: plan basado en el README actual. H1 implementado: base React/TypeScript/Vite, navegación móvil, esquema local v1 de preferencias y CI configurado. Verificado con lint, compilación, dos pruebas de persistencia y dos recorridos en Chromium móvil. H2 implementado: registro diario por fecha, edición y borrado individual de métricas, agua rápida configurable y esquema local v2. Verificado con ocho pruebas de dominio/persistencia y cuatro recorridos en Chromium móvil. Los objetivos, el histórico con gráficas, la nutrición y el modo sin conexión siguen pendientes. Confirmado el 8 de noviembre de 2026: uso personal desde un único teléfono y almacenamiento local. El resto de decisiones técnicas se mantiene como propuesta.
 
 ## 1. Resultado que buscamos
 

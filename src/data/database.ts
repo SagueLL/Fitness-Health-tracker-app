@@ -5,12 +5,25 @@ export interface Preferences {
   waterShortcutMl: number
 }
 
+export interface DailyRecord {
+  date: string
+  waterMl?: number
+  sleepMinutes?: number
+  sleepScore?: number
+  steps?: number
+  weightKg?: number
+  createdAt: string
+  updatedAt: string
+}
+
 export class AppDatabase extends Dexie {
   preferences!: EntityTable<Preferences, 'id'>
+  dailyRecords!: EntityTable<DailyRecord, 'date'>
 
   constructor(name = 'fitness-health-tracker') {
     super(name)
     this.version(1).stores({ preferences: '&id' })
+    this.version(2).stores({ dailyRecords: '&date' })
   }
 }
 
