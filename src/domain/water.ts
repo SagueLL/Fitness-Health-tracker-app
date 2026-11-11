@@ -17,3 +17,11 @@ export function waterAverageTone(averageMl: number | undefined) {
   if (averageMl >= 1000) return { tone: 'brown', label: '1–<1,5 L' }
   return { tone: 'red', label: 'Menos de 1 L' }
 }
+
+// Ten progress bands; completion has its own excellent/pink state.
+export function waterRingColor(fraction: number) {
+  const colors = ['#ff6565', '#ff9393', '#d8ad80', '#ff963d', '#ffbc80', '#ffe044', '#fff395', '#d4ca50', '#71b876', '#b4ef7d']
+  if (fraction >= 1) return '#ff87d7'
+  const safe = Number.isFinite(fraction) ? Math.max(0, fraction) : 0
+  return colors[Math.min(9, Math.floor(safe * 10))]
+}

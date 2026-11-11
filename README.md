@@ -207,3 +207,6 @@ El orden del Resumen es Peso → Puntuación del sueño → Duración del sueño
 La media de puntuación del sueño utiliza su escala de puntos. La media de agua utiliza tramos absolutos: desde 3000 ml rosa/«Excelente», desde 2500 verde claro, desde 2000 verde oscuro, desde 1500 amarillo, desde 1000 marrón y por debajo rojo. La media continúa calculándose sobre los días registrados, con su cobertura visible; no se rellenan los días ausentes con ceros.
 
 Se han retirado las notas de huecos y el texto «Eje ajustado» de las gráficas. El eje del peso conserva su escala adaptada, sin esa etiqueta.
+
+
+El anillo de agua y su porcentaje comparten un color por progreso: 0–<10 % rojo, 10–<20 % rojo claro, 20–<30 % marrón, 30–<40 % naranja, 40–<50 % naranja claro, 50–<60 % amarillo, 60–<70 % amarillo claro, 70–<80 % amarillo oscuro, 80–<90 % verde oscuro y 90–<100 % verde claro. Desde el 100 % se utiliza rosa/fucsia. La pista vacía queda teñida suavemente del mismo color para que el 0 % también se vea rojo, sin simular progreso.
