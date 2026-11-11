@@ -4,6 +4,7 @@ import './App.css'
 import DailyPage from './features/DailyPage'
 import HistoryPage from './features/HistoryPage'
 import DietPage from './features/DietPage'
+import PwaSettings from './pwa/PwaSettings'
 
 const sections = [
   { path: '/', label: 'Resumen', icon: 'M4 19V5M4 19h16M8 15l4-5 4 2 4-7' },
@@ -22,11 +23,6 @@ function Home() {
   const [params] = useSearchParams()
   return params.has('date') ? <Navigate to={`/registros?${params.toString()}`} replace /> : <HistoryPage />
 }
-function Settings() {
-  return <><h1 className="page-title">Ajustes</h1>
-    <section className="panel settings-empty"><span className="settings-symbol" aria-hidden="true">α</span><h2>Próximamente</h2></section>
-  </>
-}
 function NotFound() {
   return <><h1>Página no encontrada</h1><NavLink to="/" className="button">Volver al resumen</NavLink></>
 }
@@ -39,7 +35,7 @@ export default function App() {
         <Route path="/registros" element={<DailyPage />} />
         <Route path="/evolucion" element={<Navigate to="/" replace />} />
         <Route path="/dieta/*" element={<DietPage />} />
-        <Route path="/ajustes" element={<Settings />} />
+        <Route path="/ajustes" element={<PwaSettings />} />
         <Route path="*" element={<NotFound />} />
       </Routes></main>
       <nav className="bottom-nav" aria-label="Navegación principal">{sections.map(section => <NavLink key={section.path} to={section.path} end={section.path !== '/dieta'}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={section.icon} /></svg>{section.label}</NavLink>)}</nav>

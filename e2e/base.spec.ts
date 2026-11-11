@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('Alpha abre Resumen, separa Registros y mantiene Ajustes vacío', async ({ page }) => {
+test('Alpha abre Resumen y separa Registros de los ajustes de instalación', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveTitle('Alpha')
   await expect(page.getByRole('link', { name: 'Alpha, inicio' })).toBeVisible()
@@ -28,7 +28,7 @@ test('Alpha abre Resumen, separa Registros y mantiene Ajustes vacío', async ({ 
   await expect(page.getByRole('button', { name: 'Añadir 350 ml de agua' })).toBeEnabled()
   await nav.getByRole('link', { name: 'Ajustes' }).click()
   await expect(page.getByRole('heading', { name: 'Ajustes', exact: true })).toBeVisible()
-  await expect(page.getByText('Próximamente', { exact: true })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Instalar Alpha', exact: true })).toBeVisible()
   await expect(page.locator('main input, main select, main textarea, main form')).toHaveCount(0)
   await expect(page.getByText('Objetivos sencillos', { exact: true })).toHaveCount(0)
   await nav.getByRole('link', { name: 'Dieta' }).click()

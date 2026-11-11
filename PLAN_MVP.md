@@ -243,3 +243,13 @@ Por petición del propietario, el producto se llama Alpha y utiliza α como sím
 - Media del sueño por escala de puntuación; media de agua por tramos de 500 ml descendiendo desde 3000 ml rosa/Excelente hasta menos de 1000 ml rojo. Media sobre días registrados, diferenciada de la meta acumulada sobre todo el periodo.
 - Retiradas las notas sobre huecos y la etiqueta de eje ajustado, sin alterar el tratamiento de datos ausentes o la escala real del peso.
 - Validación: 40 pruebas de dominio/persistencia, 16 recorridos de navegador, lint, build y revisión visual del anillo.
+
+
+## H6: PWA implementada y validada en Chromium
+
+- Vite PWA/Workbox en producción, manifiesto standalone y familia de iconos Alpha (incluidos maskable e iOS).
+- Precaché de recursos estáticos; IndexedDB conserva sus datos y no se incorpora a la caché de red. La app puede recargarse y escribirse offline tras una primera carga.
+- Ajustes pasa a alojar instalación, instrucciones específicas de navegador, disponibilidad offline y búsqueda de actualizaciones; sigue sin formularios de salud.
+- Actualizaciones por confirmación, con recuperación del flujo incluso en la sesión de primera instalación. No se recargan automáticamente otras pestañas.
+- Validación: 40 pruebas de dominio/persistencia, 17 recorridos funcionales y 4 pruebas de producción PWA, más lint/build. CI incluye ambas suites de navegador.
+- Pendiente para cerrar la entrega al teléfono: elegir/publicar alojamiento HTTPS estable y verificar la instalación y almacenamiento en el dispositivo real. No se ha realizado despliegue externo. Instrucciones en [docs/PWA.md](docs/PWA.md).

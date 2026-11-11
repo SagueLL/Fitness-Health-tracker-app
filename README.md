@@ -83,7 +83,7 @@ Las integraciones dependerán de las APIs, permisos y condiciones de acceso de c
 
 ## Decisiones pendientes
 
-- Completar la instalación como PWA y el funcionamiento sin conexión; todavía no están disponibles en esta base técnica.
+- Publicar la PWA en una URL HTTPS estable y verificar su instalación en el teléfono personal.
 - Documentar las fórmulas, unidades y reglas de cálculo de la hoja actual.
 - Diseñar las primeras pantallas y el flujo de registro diario.
 - Concretar cómo trasladar el histórico y cuándo incorporar autenticación e integraciones.
@@ -108,6 +108,7 @@ npm test           # Persistencia y validaciones
 npm run build      # Comprobación de tipos y compilación
 npx playwright install chromium
 npm run test:e2e    # Recorridos en Chromium con tamaño móvil
+npm run test:pwa    # Pruebas PWA sobre dist/ (hacer build primero)
 npm run preview    # Servir la compilación localmente
 ```
 
@@ -132,7 +133,7 @@ npm run preview    # Servir la compilación localmente
 
 Los datos pertenecen al navegador y al origen (protocolo, dominio y puerto) usados. Abrir otra URL o borrar los datos del sitio no conserva la misma información. No hay copia de seguridad automática. Las gráficas no conectan los días sin registros; las medias excluyen los datos ausentes e incluyen los ceros. La media móvil del peso utiliza solo los registros de los últimos siete días naturales, incluidos los anteriores al periodo visible cuando corresponde. El cambio de peso del periodo no se presenta como una tasa semanal.
 
-Los recursos de la aplicación aún necesitan conexión; el soporte sin conexión corresponde al hito H6.
+La compilación de producción permite abrir y utilizar Alpha sin conexión después de una primera carga completa. Consulta [docs/PWA.md](docs/PWA.md) para instalación, pruebas y alojamiento HTTPS.
 
 ### Organización
 
@@ -158,7 +159,7 @@ La edición actualiza la fase seleccionada, sin crear un historial de revisiones
 - **Comparar fases** permite elegir referencia y comparada, intercambiarlas y mostrar solo comidas con cambios o todas. Muestra texto anterior y nuevo, comidas añadidas/eliminadas/modificadas, posición y cambios de notas. No interpreta cantidades ni calcula diferencias nutricionales.
 - Entre fases independientes se emparejan comidas por nombre (ignorando mayúsculas y espacios exteriores); nombres repetidos se emparejan por aparición. Se comparan los contenidos actualmente guardados, no revisiones automáticas de cada edición. Las fases siguen siendo editables y eliminables de forma explícita.
 - Las fases anteriores ya guardadas continúan funcionando. No se requiere cambiar el esquema v5: las referencias de copia son campos opcionales.
-- Duplicar y comparar funciona sobre IndexedDB. Esto conserva planes, pero no instala la app ni habilita todavía su carga sin conexión: el service worker y el manifiesto PWA siguen pendientes.
+- Duplicar y comparar funciona sobre IndexedDB. Esto conserva planes; la instalación y la carga sin conexión se habilitan mediante el service worker y el manifiesto PWA de la compilación de producción.
 
 
 ### Interfaz Alpha y navegación
@@ -168,9 +169,9 @@ Alpha utiliza un tema oscuro principal (negros y grises), acentos dorados y el s
 1. **Resumen** (`/#/`): pantalla inicial con gráficas, medias, cobertura y consulta del histórico. Gráficas deslizables por métrica y selector compartido de 7/30/90 días, seguido de medias, rangos y registros.
 2. **Registros** (`/#/registros`): agua, duración/calidad del sueño, pasos y peso por fecha. Al final, «Objetivos y registro rápido» agrupa los objetivos básicos y la cantidad del botón de agua.
 3. **Dieta** (`/#/dieta`): Mi dieta y Calculadora, con edición, duplicación y comparación de fases.
-4. **Ajustes** (`/#/ajustes`): espacio reservado para configuración futura, sin formularios ni información personal.
+4. **Ajustes** (`/#/ajustes`): instalación de Alpha, disponibilidad sin conexión y búsqueda de actualizaciones, sin formularios de registros ni información de salud.
 
-La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?date=…` abren el registro correspondiente. El nombre interno de IndexedDB se conserva para seguir accediendo a todos los datos existentes; el cambio de marca no requiere migración. Instalación PWA y carga sin conexión siguen pendientes.
+La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?date=…` abren el registro correspondiente. El nombre interno de IndexedDB se conserva para seguir accediendo a todos los datos existentes; el cambio de marca no requiere migración. La instalación PWA y la carga sin conexión están implementadas para la compilación de producción; falta la verificación de instalación en el teléfono y una URL HTTPS de alojamiento.
 
 
 ### Resumen visual y paleta dorada
@@ -222,3 +223,10 @@ La igualdad de alturas está comprobada automáticamente en anchos de 360, 390 y
 
 
 En Registros del periodo, Agua, Duración del sueño y Puntuación del sueño muestran solo Fecha y Registro. Pasos y Peso mantienen Objetivo. Se conservan los colores y los objetivos guardados; la duración sigue tomando el color de su puntuación asociada sin mostrar una tercera columna.
+
+
+### Instalación y modo sin conexión
+
+La versión de producción incorpora manifiesto, iconos y caché de los recursos de la aplicación. Tras una primera carga completa con conexión, Alpha puede reabrirse y guardar registros y dietas sin red. Ajustes incluye instalación e instrucciones para Android/iOS, disponibilidad offline y búsqueda de actualizaciones. Las versiones nuevas esperan confirmación antes de recargar y conservan IndexedDB.
+
+Para probar: `npm ci`, `npm run build` y `npm run preview`. El modo de desarrollo (`npm run dev`) no activa el service worker. Para instalar en el teléfono hace falta alojar `dist/` en una URL HTTPS estable; todavía no se ha publicado un alojamiento. Detalles y comprobaciones manuales pendientes en [docs/PWA.md](docs/PWA.md).

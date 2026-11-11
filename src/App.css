@@ -149,3 +149,7 @@ select option { background: var(--surface); }
 .water-slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
 .water-slide-content .water-ring-panel { flex: 1; height: auto; min-height: 0; }
 .water-slide-content .water-ring { width: 200px; height: 200px; max-width: 100%; max-height: 100%; }
+
+.pwa-notices { position: fixed; z-index: 8; bottom: calc(105px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: min(calc(100% - 32px), 600px); display: grid; gap: 10px; pointer-events: none; }.pwa-notices > aside { pointer-events: auto; border: 1px solid var(--border-strong); background: #191919; border-radius: 14px; box-shadow: 0 8px 30px #0008; padding: 16px; }.pwa-notices .pwa-offline { justify-self: center; padding: 8px 16px; color: var(--muted); font-size: 12px; }.pwa-update strong { font-size: 15px; }.pwa-update p { font-size: 13px; color: var(--muted); margin: 8px 0 14px; }.pwa-instructions { margin-top: 18px; font-size: 13px; line-height: 1.65; }.pwa-instructions summary { cursor: pointer; padding: 10px 0; }.pwa-instructions ul { padding-left: 20px; }.pwa-instructions li + li { margin-top: 12px; }
+
+.pwa-update > button + button { margin-left: 10px; }
