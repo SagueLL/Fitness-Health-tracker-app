@@ -7,7 +7,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   const [selectedDate, setSelectedDate] = useState<string>()
   const selected = points.find(point => point.date === selectedDate)
   const values = points.flatMap(point => [point.value, point.target, metric === 'weightKg' ? point.movingAverage : undefined].filter((v): v is number => v !== undefined))
-  if (!points.some(point => point.value !== undefined)) return <div className="chart-empty"><h3>Aún no hay registros en este periodo.</h3><p>Prueba otro periodo o añade un registro desde Hoy.</p></div>
+  if (!points.some(point => point.value !== undefined)) return <div className="chart-empty"><h3>Aún no hay registros en este periodo.</h3><p>Prueba otro periodo o añade un registro desde Registros.</p></div>
   const max = Math.max(...values), min = metric === 'weightKg' ? Math.min(...values) : 0
   const padding = Math.max((max - min) * .12, metric === 'weightKg' ? .5 : 1)
   const lo = metric === 'weightKg' ? Math.max(0, min - padding) : 0, hi = max + padding

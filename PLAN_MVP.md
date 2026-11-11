@@ -192,3 +192,16 @@ Por petición expresa del propietario, se entrega primero una interfaz sencilla 
 - Compatible con fases v5 existentes, sin migración destructiva ni cambio de esquema.
 - Esta entrega cubre conservación y comparación de planes. H6 (manifiesto, instalación, service worker, caché y comprobación sin conexión) sigue pendiente.
 - Verificación: 31 pruebas de dominio/persistencia, 12 recorridos en navegador, lint y build.
+
+
+## Interfaz Alpha y reorganización de pestañas
+
+Por petición del propietario, el producto se llama Alpha y utiliza α como símbolo. Tema oscuro principal de negros, azules oscuros y grises en todas las pantallas, con formularios nativos oscuros, contrastes legibles y acentos azules.
+
+- Resumen: primera pestaña y pantalla inicial, a partir del histórico existente. El contenido destacado y la distribución final se decidirán después.
+- Registros: segunda pestaña para las cinco métricas, objetivos básicos y cantidad del registro rápido de agua. El cambio de objetivos o cantidad se refleja sin borrar un borrador diario.
+- Dieta: tercera pestaña; se conserva la estructura Mi dieta/Calculadora y las funciones existentes.
+- Ajustes: cuarta pestaña reservada para configuración futura, sin formularios ni información de registros.
+- Logotipo α, favicon SVG y título Alpha; no se cambia el nombre de la base local ni se migran los datos por el cambio visual. Se mantienen enlaces antiguos mediante redirecciones.
+- Al cambiar de sección la vista vuelve al inicio. La PWA queda para la siguiente etapa.
+- Validación: 31 pruebas de dominio/persistencia, 13 recorridos en Chromium móvil, compilación y lint. Revisión visual de pantallas móviles y escritorio.

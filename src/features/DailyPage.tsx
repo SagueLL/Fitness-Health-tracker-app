@@ -1,3 +1,5 @@
+import GoalsForm from './GoalsForm'
+import WaterPreference from './WaterPreference'
 import { useSearchParams } from 'react-router-dom'
 import { useEffect, useState, type FormEvent } from 'react'
 import { readGoals } from '../data/historyRepository'
@@ -12,7 +14,7 @@ function fieldsOf(record?: DailyRecord): Fields {
   return Object.fromEntries(metrics.map(({ key }) => [key, record?.[key]?.toString().replace('.', ',') ?? ''])) as Fields
 }
 
-function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean) => void }) {
+function DailyEditor({ date, onDirty, waterAmount, goalRevision }: { date: string; onDirty: (dirty: boolean) => void; waterAmount?: number; goalRevision: number }) {
   const [record, setRecord] = useState<DailyRecord>()
   const [fields, setFields] = useState(() => fieldsOf())
   const [shortcut, setShortcut] = useState(250)
@@ -32,6 +34,15 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
     }).catch(() => { if (active) { setError('No se pudieron cargar tus datos. Vuelve a intentarlo.'); setLoading(false) } })
     return () => { active = false }
   }, [date, attempt])
+
+  useEffect(() => {
+    if (!goalRevision) return
+    let active = true
+    readGoals().then(versions => { if (active) setGoals(goalForDate(versions, date)) })
+      .catch(() => { if (active) setError('No se pudo actualizar la referencia de objetivos. Recarga para intentarlo de nuevo.') })
+    return () => { active = false }
+  }, [goalRevision, date])
+  const quickAmount = waterAmount ?? shortcut
 
   async function persist(action: () => Promise<DailyRecord | undefined>, message: string) {
     setSaving(true); setError(''); setStatus('')
@@ -81,7 +92,7 @@ function DailyEditor({ date, onDirty }: { date: string; onDirty: (dirty: boolean
     </section>
     <section className="panel water-quick"><h2>Un poco más de agua</h2>
       <p>Total guardado: <strong>{record?.waterMl === undefined ? 'Sin registrar' : `${record.waterMl.toLocaleString('es')} ml`}</strong></p>
-      <button className="button" disabled={!ready || loading || saving || dirty} onClick={() => void persist(() => addWater(date, shortcut), 'Agua añadida al registro de esta fecha.')}>Añadir {shortcut} ml de agua</button>
+      <button className="button" disabled={!ready || loading || saving || dirty} onClick={() => void persist(() => addWater(date, quickAmount), 'Agua añadida al registro de esta fecha.')}>Añadir {quickAmount} ml de agua</button>
       {dirty && <p className="footnote">Guarda o descarta los cambios antes de añadir agua o borrar un valor.</p>}
     </section>
     {dirty && <button className="text-link discard" disabled={saving} onClick={() => { if (window.confirm('¿Descartar los cambios sin guardar?')) { setFields(fieldsOf(record)); setError(''); setStatus('Cambios descartados.') } }}>Descartar cambios</button>}
@@ -95,6 +106,8 @@ export default function DailyPage() {
     if (requested) { try { validateDate(requested); return requested } catch { /* Fall back to today for invalid links. */ } }
     return localDate()
   })
+  const [waterAmount, setWaterAmount] = useState<number>()
+  const [goalRevision, setGoalRevision] = useState(0)
   const [dirty, setDirty] = useState(false)
   useEffect(() => {
     if (!dirty) return
@@ -112,7 +125,7 @@ export default function DailyPage() {
       document.removeEventListener('click', navigation, true)
     }
   }, [dirty])
-  return <><p className="eyebrow">TU ESPACIO PERSONAL</p><h1>Un día a la vez.</h1>
+  return <><p className="eyebrow">TU DÍA, EN DATOS</p><h1>Registros</h1>
     <p className="subtitle">Registra tus hábitos de hoy o completa un día anterior.</p>
     <div className="date-picker"><label htmlFor="record-date">Fecha del registro</label>
       <input id="record-date" type="date" value={date} max={localDate()} required onChange={event => {
@@ -121,6 +134,10 @@ export default function DailyPage() {
         setDirty(false); setDate(event.target.value)
       }} />
     </div>
-    <DailyEditor key={date} date={date} onDirty={setDirty} />
+    <DailyEditor key={date} date={date} onDirty={setDirty} waterAmount={waterAmount} goalRevision={goalRevision} />
+    <details className="record-options"><summary>Objetivos y registro rápido</summary>
+      <GoalsForm onSaved={() => setGoalRevision(value => value + 1)} />
+      <WaterPreference onSaved={setWaterAmount} />
+    </details>
   </>
 }

@@ -27,7 +27,7 @@ export default function HistoryPage() {
   const summary = summarize(points)
   const title = metrics.find(value => value.key === metric)!.label
   const rows = points.filter(point => point.value !== undefined).reverse()
-  return <><p className="eyebrow">PERSPECTIVA, DÍA A DÍA</p><h1>Tu evolución.</h1><p className="subtitle">Mira tus hábitos con un poco de distancia.</p>
+  return <><p className="eyebrow">UNA VISIÓN DE CONJUNTO</p><h1>Resumen</h1><p className="subtitle">Tus datos, tu progreso, tu perspectiva.</p>
     <section className="panel history-filters" aria-label="Filtros del histórico">
       <label htmlFor="history-metric">Métrica</label><select id="history-metric" value={metric} onChange={event => setMetric(event.target.value as Metric)}>{metrics.map(value => <option value={value.key} key={value.key}>{value.label}</option>)}</select>
       <div className="period-buttons" aria-label="Duración del periodo">{[7, 30, 90].map(days => <button key={days} type="button" aria-pressed={days === period} disabled={days === period} onClick={() => changeRange(() => setPeriod(days))}>{days} días</button>)}</div>
@@ -44,8 +44,8 @@ export default function HistoryPage() {
       {metric !== 'sleepScore' && metric !== 'weightKg' && <p className="goal-summary">{summary.eligible ? `${summary.achieved} de ${summary.eligible} días registrados con objetivo cumplido.` : 'Sin días registrados con objetivo para comparar.'} Los días sin registro no cuentan como cumplidos.</p>}
       <section className="panel chart-panel" aria-label={`Gráfica de ${title.toLowerCase()}`}><HistoryChart key={`${metric}-${start}-${end}`} points={points} metric={metric} /></section>
       <section className="panel history-records"><h2>Registros del periodo</h2><p>Los días sin datos de esta métrica no aparecen en la tabla.</p>
-        {rows.length ? <div className="table-scroll"><table><caption className="sr-only">{title}: valores y objetivos por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th><th scope="col">Objetivo</th></tr></thead><tbody>{rows.map(point => <tr key={point.date}><th scope="row"><NavLink to={`/?date=${point.date}`} aria-label={`Editar registro del ${point.date}`}>{shortDate(point.date)}<small>{point.date.slice(0, 4)}</small></NavLink></th><td>{formatValue(point.value, metric)}</td><td>{point.target === undefined ? 'Sin objetivo' : <>{formatValue(point.target, metric)}{metric !== 'weightKg' && <small>{Math.round(point.value! / point.target * 100)} %</small>}</>}</td></tr>)}</tbody></table></div> : <p>No hay registros para mostrar.</p>}
-        <NavLink className="text-link" to="/">Ir al registro diario →</NavLink>
+        {rows.length ? <div className="table-scroll"><table><caption className="sr-only">{title}: valores y objetivos por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th><th scope="col">Objetivo</th></tr></thead><tbody>{rows.map(point => <tr key={point.date}><th scope="row"><NavLink to={`/registros?date=${point.date}`} aria-label={`Editar registro del ${point.date}`}>{shortDate(point.date)}<small>{point.date.slice(0, 4)}</small></NavLink></th><td>{formatValue(point.value, metric)}</td><td>{point.target === undefined ? 'Sin objetivo' : <>{formatValue(point.target, metric)}{metric !== 'weightKg' && <small>{Math.round(point.value! / point.target * 100)} %</small>}</>}</td></tr>)}</tbody></table></div> : <p>No hay registros para mostrar.</p>}
+        <NavLink className="text-link" to="/registros">Ir al registro diario →</NavLink>
       </section>
     </>}
   </>

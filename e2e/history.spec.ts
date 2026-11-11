@@ -7,7 +7,7 @@ const shiftDate = (day: string, offset: number) => {
 }
 
 async function seed(page: Page) {
-  await page.goto('/')
+  await page.goto('/#/registros')
   await expect(page.getByRole('button', { name: 'Guardar registro' })).toBeEnabled()
   const today = localDate()
   await page.evaluate(async ({ today }) => {
@@ -36,7 +36,7 @@ async function seed(page: Page) {
 
 test('gráficas, cobertura, objetivos históricos, periodos y edición desde la tabla', async ({ page }) => {
   await seed(page)
-  await page.getByRole('navigation').getByRole('link', { name: 'Evolución' }).click()
+  await page.getByRole('navigation').getByRole('link', { name: 'Resumen' }).click()
   await page.getByRole('button', { name: '7 días', exact: true }).click()
   await expect(page.getByText('3 de 7 días registrados')).toBeVisible()
   await expect(page.getByText('2 de 3 días registrados con objetivo cumplido.', { exact: false })).toBeVisible()
@@ -56,11 +56,12 @@ test('gráficas, cobertura, objetivos históricos, periodos y edición desde la 
   const date = shiftDate(localDate(), -2)
   await page.getByRole('link', { name: `Editar registro del ${date}` }).click()
   await expect(page.getByLabel('Fecha del registro')).toHaveValue(date)
-  await expect(page.getByLabel('Peso (kg)')).toHaveValue('73,5')
+  await expect(page.getByLabel('Peso (kg)', { exact: true })).toHaveValue('73,5')
 })
 
 test('objetivos básicos persistentes y reflejados en el registro diario', async ({ page }) => {
-  await page.goto('/#/ajustes')
+  await page.goto('/#/registros')
+  await page.getByText('Objetivos y registro rápido', { exact: true }).click()
   const section = page.getByRole('region', { name: 'Objetivos sencillos' })
   await expect(section.getByRole('button', { name: 'Guardar objetivos' })).toBeEnabled()
   await section.getByLabel('Objetivo de agua (ml)').fill('2000')
@@ -70,12 +71,14 @@ test('objetivos básicos persistentes y reflejados en el registro diario', async
   await section.getByRole('button', { name: 'Guardar objetivos' }).click()
   await expect(section.getByRole('status')).toContainText('Objetivos guardados')
   await page.reload()
+  await page.getByText('Objetivos y registro rápido', { exact: true }).click()
   await expect(section.getByLabel('Objetivo de peso (kg)')).toHaveValue('72,5')
   await section.getByLabel('Objetivo de agua (ml)').fill('2500')
   page.once('dialog', dialog => dialog.dismiss())
   await section.getByRole('button', { name: 'Guardar objetivos' }).click()
   await page.reload()
+  await page.getByText('Objetivos y registro rápido', { exact: true }).click()
   await expect(section.getByLabel('Objetivo de agua (ml)')).toHaveValue('2000')
-  await page.getByRole('navigation').getByRole('link', { name: 'Hoy', exact: true }).click()
+  await page.getByRole('navigation').getByRole('link', { name: 'Registros', exact: true }).click()
   await expect(page.getByText('Objetivo: 2.000 ml', { exact: true })).toBeVisible()
 })

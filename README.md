@@ -1,6 +1,6 @@
-# Fitness & Health Tracker
+# Alpha · α
 
-Aplicación orientada al móvil para centralizar el seguimiento personal de la nutrición, los hábitos y la evolución física.
+Aplicación personal con interfaz oscura, orientada al móvil para centralizar el seguimiento personal de la nutrición, los hábitos y la evolución física.
 
 El proyecto nace de una hoja de cálculo de Google Sheets utilizada para registrar estos datos manualmente. La idea es trasladar esa forma de organizar la información a una interfaz propia, cómoda de usar desde el teléfono y preparada para incorporar nuevas funciones con el tiempo.
 
@@ -113,13 +113,13 @@ npm run preview    # Servir la compilación localmente
 
 ### Qué se puede probar ahora
 
-- En Hoy, seleccionar hoy o una fecha anterior y registrar agua (ml), sueño (duración en minutos y puntuación de 0 a 100), pasos y peso (kg).
+- En Registros, seleccionar hoy o una fecha anterior y registrar agua (ml), sueño (duración en minutos y puntuación de 0 a 100), pasos y peso (kg).
 - Editar los valores, borrar cada métrica con confirmación y comprobar su persistencia al recargar. Los campos vacíos son datos ausentes; cero es un valor registrado.
 - Usar coma o punto decimal, sin separadores de miles. Los pasos y la duración del sueño se introducen como enteros.
-- Añadir agua rápidamente a la fecha seleccionada. En Ajustes se configura la cantidad por pulsación.
-- En Ajustes, configurar objetivos opcionales de agua, pasos, duración del sueño y peso de referencia. Cada versión empieza hoy o en una fecha futura; sustituir una versión con la misma fecha requiere confirmación. Dejar un objetivo vacío lo desactiva desde esa fecha.
-- En Hoy, consultar los objetivos correspondientes a la fecha seleccionada.
-- En Evolución, seleccionar métrica, periodos de 7/30/90 días y fecha final; navegar por periodos anteriores y siguientes.
+- Añadir agua rápidamente a la fecha seleccionada. En Registros → Objetivos y registro rápido se configura la cantidad por pulsación.
+- En Registros → Objetivos y registro rápido, configurar objetivos opcionales de agua, pasos, duración del sueño y peso de referencia. Cada versión empieza hoy o en una fecha futura; sustituir una versión con la misma fecha requiere confirmación. Dejar un objetivo vacío lo desactiva desde esa fecha.
+- En Registros, consultar los objetivos correspondientes a la fecha seleccionada.
+- En Resumen, seleccionar métrica, periodos de 7/30/90 días y fecha final; navegar por periodos anteriores y siguientes.
 - Consultar gráficas interactivas, medias, cobertura, rango y tabla de registros con enlaces para editar cada fecha. Para peso se muestran el cambio entre primer y último registro y una media móvil de siete días naturales.
 - Comparar con los objetivos vigentes cada día. Agua, pasos y sueño tienen comparación de cumplimiento; el peso solo tiene una referencia visual. La puntuación del sueño no tiene objetivo.
 - En Dieta → Mi dieta, crear fases con nombre, comidas y notas; escribir alimentos y cantidades en texto libre, editar y consultar fases independientes. El plan se presenta en tarjetas y no calcula nutrientes de los alimentos.
@@ -159,3 +159,15 @@ La edición actualiza la fase seleccionada, sin crear un historial de revisiones
 - Entre fases independientes se emparejan comidas por nombre (ignorando mayúsculas y espacios exteriores); nombres repetidos se emparejan por aparición. Se comparan los contenidos actualmente guardados, no revisiones automáticas de cada edición. Las fases siguen siendo editables y eliminables de forma explícita.
 - Las fases anteriores ya guardadas continúan funcionando. No se requiere cambiar el esquema v5: las referencias de copia son campos opcionales.
 - Duplicar y comparar funciona sobre IndexedDB. Esto conserva planes, pero no instala la app ni habilita todavía su carga sin conexión: el service worker y el manifiesto PWA siguen pendientes.
+
+
+### Interfaz Alpha y navegación
+
+Alpha utiliza un tema oscuro principal (negros, azul noche y grises), acentos azules y el símbolo griego α como marca e icono del navegador. No hay selector de tema por ahora.
+
+1. **Resumen** (`/#/`): pantalla inicial con gráficas, medias, cobertura y consulta del histórico. La selección de los datos destacados y su distribución se concretará en una siguiente revisión.
+2. **Registros** (`/#/registros`): agua, duración/calidad del sueño, pasos y peso por fecha. Al final, «Objetivos y registro rápido» agrupa los objetivos básicos y la cantidad del botón de agua.
+3. **Dieta** (`/#/dieta`): Mi dieta y Calculadora, con edición, duplicación y comparación de fases.
+4. **Ajustes** (`/#/ajustes`): espacio reservado para configuración futura, sin formularios ni información personal.
+
+La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?date=…` abren el registro correspondiente. El nombre interno de IndexedDB se conserva para seguir accediendo a todos los datos existentes; el cambio de marca no requiere migración. Instalación PWA y carga sin conexión siguen pendientes.

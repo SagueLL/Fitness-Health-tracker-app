@@ -5,7 +5,7 @@ import { goalForDate, goalKeys, type Goals } from '../domain/goals'
 import { formatValue, shortDate } from '../domain/history'
 
 type Fields = Record<string, string>
-export default function GoalsForm() {
+export default function GoalsForm({ onSaved }: { onSaved?: () => void }) {
   const [goals, setGoals] = useState<Goals[]>([])
   const [fields, setFields] = useState<Fields>({})
   const [date, setDate] = useState(localDate)
@@ -35,6 +35,7 @@ export default function GoalsForm() {
       await saveGoals(goal, replace)
       setGoals(values => [...values.filter(value => value.effectiveFrom !== date), goal].sort((a, b) => a.effectiveFrom.localeCompare(b.effectiveFrom)))
       setStatus('Objetivos guardados en este dispositivo.')
+      onSaved?.()
     } catch (cause) {
       setError(cause instanceof ValidationError ? cause.message : 'No se pudieron guardar los objetivos. Vuelve a intentarlo.')
     } finally { setSaving(false) }
