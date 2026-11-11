@@ -219,3 +219,6 @@ El gráfico de agua se presenta compacto: solo título, fechas y anillo con porc
 
 
 La igualdad de alturas está comprobada automáticamente en anchos de 360, 390 y 1280 px, incluyendo el panel de Agua y el contenedor del carrusel.
+
+
+En Registros del periodo, Agua, Duración del sueño y Puntuación del sueño muestran solo Fecha y Registro. Pasos y Peso mantienen Objetivo. Se conservan los colores y los objetivos guardados; la duración sigue tomando el color de su puntuación asociada sin mostrar una tercera columna.

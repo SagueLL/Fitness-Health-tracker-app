@@ -5,6 +5,7 @@ import { formatValue, shortDate, type HistoryPoint } from '../domain/history'
 import { historyTone, toneBands } from '../domain/historyTone'
 
 export default function HistoryTable({ rows, metric, title, period }: { rows: HistoryPoint[]; metric: Metric; title: string; period: number }) {
+  const showObjective = metric === 'steps' || metric === 'weightKg'
   const container = useRef<HTMLDivElement>(null)
   const table = useRef<HTMLTableElement>(null)
   useLayoutEffect(() => {
@@ -23,12 +24,12 @@ export default function HistoryTable({ rows, metric, title, period }: { rows: Hi
   }, [metric, period, rows])
   return <>
     <div ref={container} className="table-scroll history-table-scroll" role="region" aria-label={`Tabla de ${title.toLowerCase()}${rows.length > 5 ? ', desplázate para ver más registros' : ''}`} tabIndex={rows.length > 5 ? 0 : undefined}>
-      <table ref={table}><caption className="sr-only">{title}: valores y objetivos por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th><th scope="col">{metric === 'sleepMinutes' ? 'Calidad' : 'Objetivo'}</th></tr></thead><tbody>{rows.map(point => {
+      <table ref={table}><caption className="sr-only">{title}: {showObjective ? 'valores y objetivos' : 'registros'} por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th>{showObjective && <th scope="col">Objetivo</th>}</tr></thead><tbody>{rows.map(point => {
         const band = historyTone(metric, point.value, point.target, point.sleepScore)
         return <tr key={point.date} className={band ? `record-tone tone-${band.tone}` : undefined}>
           <th scope="row"><NavLink to={`/registros?date=${point.date}`} aria-label={`Editar registro del ${point.date}`}>{shortDate(point.date)}<small>{point.date.slice(0, 4)}</small></NavLink></th>
           <td><span className="record-value">{formatValue(point.value, metric)}</span>{band && <span className="sr-only"> · Tramo {band.label}{metric === 'sleepScore' || metric === 'sleepMinutes' ? ' puntos de sueño' : ' % del objetivo'}</span>}</td>
-          <td>{metric === 'sleepMinutes' ? point.sleepScore === undefined ? 'Sin puntuación' : `${point.sleepScore} puntos` : point.target === undefined ? 'Sin objetivo' : <>{formatValue(point.target, metric)}{metric !== 'weightKg' && <small>{Math.round(point.value! / point.target * 100)} %</small>}</>}</td>
+          {showObjective && <td>{point.target === undefined ? 'Sin objetivo' : <>{formatValue(point.target, metric)}{metric !== 'weightKg' && <small>{Math.round(point.value! / point.target * 100)} %</small>}</>}</td>}
         </tr>
       })}</tbody></table>
     </div>
