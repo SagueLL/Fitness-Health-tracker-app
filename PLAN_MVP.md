@@ -215,3 +215,12 @@ Por petición del propietario, el producto se llama Alpha y utiliza α como sím
 - Se retiran el selector de métrica, el filtro de fecha final y los botones de navegación temporal. Los periodos terminan hoy al abrir la pantalla.
 - Se conservan medias, rangos, cobertura, cumplimiento, detalle de puntos y tabla con acceso a edición; el peso mantiene su media móvil y diferencia del periodo. No cambia la persistencia.
 - Verificado con 31 pruebas de dominio/persistencia, 14 recorridos de navegador (incluido desplazamiento y teclado del carrusel), lint y build.
+
+
+## Tablas de cinco filas y colores por tramo
+
+- Ventana de hasta cinco registros, desplazamiento vertical, cabecera fija y acceso por teclado y enlaces a todos los registros. Altura medida sobre las filas reales para mantener el límite al redimensionar.
+- Rosa desde 90, verde claro desde 80, verde oscuro desde 70, amarillo desde 60, marrón desde 50 y rojo por debajo de 50. La puntuación usa puntos; agua, pasos y duración del sueño usan porcentaje del objetivo histórico. Peso y cantidades sin objetivo mantienen tono neutro.
+- Leyenda desplegable y etiquetas textuales accesibles; no se comunica el tramo únicamente mediante color. La escala es visual, no diagnóstica, y no incrementa el nivel por encima del 100 %.
+- Amarillo principal más vivo y marca Alpha más grande, con peso 900 y cursiva. No cambia la persistencia.
+- Verificación: 33 pruebas de dominio/persistencia, 15 recorridos de navegador, lint, compilación y revisión visual móvil.

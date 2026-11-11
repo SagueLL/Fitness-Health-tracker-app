@@ -180,3 +180,12 @@ La paleta principal combina negro, gris y dorado tenue, incluido el icono α. La
 Resumen abre directamente el carrusel de las cinco métricas: agua, duración del sueño, puntuación del sueño, pasos y peso. Se puede cambiar de gráfica deslizando horizontalmente, con flechas, indicadores o las flechas del teclado al enfocar el carrusel. El periodo de 7/30/90 días es común y siempre termina en el día actual al abrir la pantalla. Se han retirado los selectores de métrica y fecha y la navegación por periodos anteriores.
 
 Bajo la gráfica se mantienen media, rango, días registrados/sin registrar y tabla del periodo, con enlace para editar cada fecha. El peso conserva su media móvil y el cambio entre extremos. Los controles del carrusel son accesibles y las diapositivas inactivas no capturan el foco.
+
+
+### Tablas compactas y escala visual
+
+Las tablas del Resumen muestran hasta cinco registros completos, con cabecera fija y desplazamiento vertical para acceder a los restantes. La altura se ajusta a las filas reales y al ancho de pantalla; no se recortan ni se eliminan registros.
+
+Escala visual de puntuación del sueño: 90–100 rosa/fucsia, 80–<90 verde claro, 70–<80 verde oscuro, 60–<70 amarillo, 50–<60 marrón y 0–<50 rojo. El límite 90 pertenece al tramo rosa y el 80 al verde claro. Para agua, pasos y duración del sueño se aplica la misma escala al porcentaje del objetivo vigente en cada fecha. Sin objetivo se usa color neutro; el peso también se mantiene neutro. Superar el 100 % no aumenta el nivel de color ni implica una recomendación de aumentar la cantidad. Cada tabla incluye una leyenda y conserva los valores numéricos.
+
+Los acentos principales usan ahora amarillo brillante sobre negros y grises. El nombre Alpha se presenta más grande, en negrita y cursiva, con fuentes locales y sin descargas externas.

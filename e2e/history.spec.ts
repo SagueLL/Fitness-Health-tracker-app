@@ -105,3 +105,43 @@ test('el carrusel responde al desplazamiento y al teclado y comparte el periodo'
   await page.setViewportSize({ width: 360, height: 800 })
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
 })
+
+test('tabla limitada a cinco filas, colores por tramo y acceso a los registros restantes', async ({ page }) => {
+  await seed(page)
+  const today = localDate()
+  await page.evaluate(async ({ today }) => {
+    const db = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open('fitness-health-tracker')
+      request.onsuccess = () => resolve(request.result)
+      request.onerror = () => reject(request.error)
+    })
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('dailyRecords', 'readwrite')
+      for (const [index, sleepScore] of [95, 85, 75, 65, 55, 45, 90, 80].entries()) {
+        const date = new Date(`${today}T12:00:00`); date.setDate(date.getDate() - index)
+        tx.objectStore('dailyRecords').put({ date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, sleepScore, waterMl: 1800, createdAt: '', updatedAt: '' })
+      }
+      tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error)
+    })
+    db.close()
+  }, { today })
+  await page.getByRole('navigation').getByRole('link', { name: 'Resumen', exact: true }).click()
+  await page.getByRole('button', { name: 'Ver puntuación del sueño', exact: true }).click()
+  const table = page.getByRole('region', { name: /^Tabla de puntuación del sueño/ })
+  await expect(table.locator('tbody tr')).toHaveCount(8)
+  for (const [index, tone] of ['pink', 'lime', 'green', 'yellow', 'brown', 'red', 'pink', 'lime'].entries()) {
+    await expect(table.locator('tbody tr').nth(index)).toHaveClass(new RegExp(`tone-${tone}`))
+  }
+  await page.setViewportSize({ width: 360, height: 800 })
+  await expect.poll(() => table.evaluate(element => {
+    const fifth = element.querySelectorAll('tbody tr')[4].getBoundingClientRect()
+    return Math.abs(element.clientHeight - (fifth.bottom - element.getBoundingClientRect().top)) < 3
+  })).toBe(true)
+  expect(await table.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true)
+  await table.evaluate(element => { element.scrollTop = element.scrollHeight })
+  expect(await table.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
+  const date = shiftDate(today, -7)
+  await table.getByRole('link', { name: `Editar registro del ${date}` }).click()
+  await expect(page.getByLabel('Fecha del registro')).toHaveValue(date)
+  await expect(page.getByLabel('Puntuación del sueño (0–100)', { exact: true })).toHaveValue('80')
+})

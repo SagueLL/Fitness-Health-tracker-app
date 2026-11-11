@@ -6,6 +6,7 @@ import { buildHistory, formatValue, shiftDate, shortDate, summarize } from '../d
 import type { DailyRecord } from '../data/database'
 import type { Goals } from '../domain/goals'
 import HistoryChart from './HistoryChart'
+import HistoryTable from './HistoryTable'
 
 export default function HistoryPage() {
   const [active, setActive] = useState(0)
@@ -65,7 +66,7 @@ export default function HistoryPage() {
       {metric === 'weightKg' && <p className="goal-summary">Cambio del periodo: <strong>{summary.change === undefined ? 'Faltan registros' : `${summary.change > 0 ? '+' : ''}${formatValue(summary.change, metric)}`}</strong></p>}
       {metric !== 'sleepScore'  && metric !== 'weightKg' && <p className="goal-summary">{summary.eligible ? `${summary.achieved} de ${summary.eligible} días registrados con objetivo cumplido.` : 'Sin días registrados con objetivo para comparar.'} Los días sin registro no cuentan como cumplidos.</p>}
       <section className="panel history-records"><h2>Registros del periodo</h2><p>Los días sin datos de esta métrica no aparecen en la tabla.</p>
-        {rows.length ? <div className="table-scroll"><table><caption className="sr-only">{title}: valores y objetivos por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th><th scope="col">Objetivo</th></tr></thead><tbody>{rows.map(point => <tr key={point.date}><th scope="row"><NavLink to={`/registros?date=${point.date}`} aria-label={`Editar registro del ${point.date}`}>{shortDate(point.date)}<small>{point.date.slice(0, 4)}</small></NavLink></th><td>{formatValue(point.value, metric)}</td><td>{point.target === undefined ? 'Sin objetivo' : <>{formatValue(point.target, metric)}{metric !== 'weightKg' && <small>{Math.round(point.value! / point.target * 100)} %</small>}</>}</td></tr>)}</tbody></table></div> : <p>No hay registros para mostrar.</p>}
+        {rows.length ? <HistoryTable rows={rows} metric={metric} title={title} period={period} /> : <p>No hay registros para mostrar.</p>}
         <NavLink className="text-link" to="/registros">Ir al registro diario →</NavLink>
       </section>
     </>}
