@@ -234,3 +234,12 @@ Por petición del propietario, el producto se llama Alpha y utiliza α como sím
 - Heurística exploratoria del histórico completo: al menos 14 noches con duración positiva/puntuación y variación de al menos 10 puntos; rango intercuartílico de la cuarta parte de noches mejor puntuadas, mínimo cinco y con empates. No propone resultados cuando faltan datos o contraste.
 - Se muestra como asociación observada, sin prescripción ni cambio automático de objetivos. Umbrales operativos documentados; no es un algoritmo clínico validado. Sin cambios del esquema local.
 - Validación: 37 pruebas de dominio/persistencia, 15 recorridos de navegador, lint, compilación y revisión visual del rango con histórico suficiente.
+
+
+## Agua circular y orden final del carrusel
+
+- Orden: peso, puntuación del sueño, duración del sueño, pasos y agua. Solo cambia el Resumen; el formulario de registros conserva su organización.
+- Anillo de agua con meta fija de 3 L por día del periodo (21/90/270 L), acumulado real, cobertura, progreso limitado a 100 % y texto de meta alcanzada. La meta no disminuye por falta de registros ni sobrescribe los objetivos históricos configurados.
+- Media del sueño por escala de puntuación; media de agua por tramos de 500 ml descendiendo desde 3000 ml rosa/Excelente hasta menos de 1000 ml rojo. Media sobre días registrados, diferenciada de la meta acumulada sobre todo el periodo.
+- Retiradas las notas sobre huecos y la etiqueta de eje ajustado, sin alterar el tratamiento de datos ausentes o la escala real del peso.
+- Validación: 40 pruebas de dominio/persistencia, 16 recorridos de navegador, lint, build y revisión visual del anillo.

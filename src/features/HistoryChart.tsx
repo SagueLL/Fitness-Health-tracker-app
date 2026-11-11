@@ -27,7 +27,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   const axis = (v: number) => (metric === 'sleepMinutes' ? v / 60 : v).toLocaleString('es', { maximumFractionDigits: metric === 'weightKg' ? 1 : 0 })
   const unit = metric === 'sleepMinutes' ? 'horas' : metric === 'waterMl' ? 'ml' : metric === 'weightKg' ? 'kg' : metric === 'steps' ? 'pasos' : 'puntos'
   return <>
-    <p className="chart-unit">{unit}{metric === 'weightKg' && ' · Eje ajustado'}</p>
+    <p className="chart-unit">{unit}</p>
     <svg className="history-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Gráfica de evolución. Toca un registro para ver su detalle; también disponible en la tabla inferior.">
       {(metric === 'sleepScore' ? [0, 25, 50, 75, 100] : [lo, lo + (hi - lo) / 3, lo + 2 * (hi - lo) / 3, hi]).map((v, index) => {
         return <g key={index}><line x1={left} x2={W - right} y1={y(v)} y2={y(v)} className="chart-grid" /><text x={left - 10} y={y(v) + 4} textAnchor="end">{axis(v)}</text></g>
@@ -39,7 +39,6 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
       {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={x(index)} y={H - 10} textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
     </svg>
     <div className="chart-legend"><span><i className="legend-value" />Registro</span>{points.some(p => p.target !== undefined) && <span><i className="legend-goal" />Objetivo de cada día</span>}{metric === 'weightKg' && <span><i className="legend-average" />Media móvil de 7 días</span>}</div>
-    <p className="footnote">Huecos: días sin registro.{metric === 'weightKg' && ' Media móvil: registros de los últimos 7 días.'}</p>
     <p className={selected ? "point-detail" : "sr-only"} role="status">{selected ? `${shortDate(selected.date)}: ${formatValue(selected.value, metric)}${selected.target === undefined ? ' · Sin objetivo' : ` · Objetivo: ${formatValue(selected.target, metric)}`}` : ''}</p>
   </>
 }

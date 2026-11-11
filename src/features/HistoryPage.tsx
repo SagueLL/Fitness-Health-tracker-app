@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import WaterRing from './WaterRing'
+import { waterAverageTone } from '../domain/water'
 import { historyTone } from '../domain/historyTone'
 import { averageSleepScore, observedSleepRange, type SleepRecord } from '../domain/sleep'
 import { readHistory, readSleepHistory } from '../data/historyRepository'
-import { localDate, metrics } from '../domain/daily'
+import { localDate, metrics as dailyMetrics } from '../domain/daily'
 import { buildHistory, formatValue, shiftDate, shortDate, summarize } from '../domain/history'
 import type { DailyRecord } from '../data/database'
 import type { Goals } from '../domain/goals'
 import HistoryChart from './HistoryChart'
 import HistoryTable from './HistoryTable'
+
+const metrics = ['weightKg', 'sleepScore', 'sleepMinutes', 'steps', 'waterMl'].map(key => dailyMetrics.find(metric => metric.key === key)!)
 
 export default function HistoryPage() {
   const [active, setActive] = useState(0)
@@ -42,6 +46,7 @@ export default function HistoryPage() {
   function changeRange(action: () => void) { setLoading(true); setError(''); action() }
   const points = buildHistory(data.records, data.goals, metric, start, end)
   const summary = summarize(points)
+  const averageTone = metric === 'sleepMinutes' ? sleepTone : metric === 'sleepScore' ? historyTone('sleepScore', summary.average) : metric === 'waterMl' ? waterAverageTone(summary.average) : undefined
   const title = metrics.find(value => value.key === metric)!.label
   const rows = points.filter(point => point.value !== undefined).reverse()
   function showMetric(index: number) {
@@ -67,14 +72,14 @@ export default function HistoryPage() {
         }}>
           {metrics.map((item, index) => <section className="panel chart-panel metric-slide" key={item.key} aria-label={`Gráfica de ${item.label.toLowerCase()}`} aria-hidden={index !== active} inert={index !== active}>
             <header className="metric-slide-header"><h2>{item.label}</h2><span>{shortDate(start)} – {shortDate(end)}</span></header>
-            <HistoryChart key={`${item.key}-${start}-${end}`} points={buildHistory(data.records, data.goals, item.key, start, end)} metric={item.key} />
+            {item.key === 'waterMl' ? <WaterRing points={buildHistory(data.records, data.goals, item.key, start, end)} /> : <HistoryChart key={`${item.key}-${start}-${end}`} points={buildHistory(data.records, data.goals, item.key, start, end)} metric={item.key} />}
           </section>)}
         </div>
         <div className="metric-dots" aria-label="Elegir gráfica">{metrics.map((item, index) => <button type="button" key={item.key} aria-label={`Ver ${item.label.toLowerCase()}`} aria-pressed={index === active} onClick={() => showMetric(index)}><span /></button>)}</div>
       </section>
       <div className="period-buttons overview-periods" aria-label="Duración del periodo">{[7, 30, 90].map(days => <button key={days} type="button" aria-pressed={days === period} disabled={days === period} onClick={() => changeRange(() => setPeriod(days))}>{days} días</button>)}</div>
       <div className="summary-grid">
-        <article className={sleepTone ? `sleep-average tone-${sleepTone.tone}` : undefined}><span>Media del periodo</span><strong>{formatValue(summary.average, metric)}</strong><small>{summary.count} de {period} días registrados</small>{metric === 'sleepMinutes' && <small>{sleepAverage.score === undefined ? 'Sin calidad asociada' : `Calidad media: ${sleepAverage.score.toLocaleString('es', { maximumFractionDigits: 1 })} puntos · ${sleepAverage.count} noches con duración y puntuación`}</small>}</article>
+        <article className={averageTone ? `sleep-average average-highlight tone-${averageTone.tone}` : undefined}><span>Media del periodo</span><strong>{formatValue(summary.average, metric)}</strong><small>{summary.count} de {period} días registrados</small>{metric === 'waterMl' && averageTone && <small>{'label' in averageTone ? averageTone.label : ''}</small>}{metric === 'sleepMinutes' && <small>{sleepAverage.score === undefined ? 'Sin calidad asociada' : `Calidad media: ${sleepAverage.score.toLocaleString('es', { maximumFractionDigits: 1 })} puntos · ${sleepAverage.count} noches con duración y puntuación`}</small>}</article>
         <article><span>Rango registrado</span><strong>{summary.count ? `${formatValue(summary.min, metric)} – ${formatValue(summary.max, metric)}` : 'Sin registros'}</strong><small>{summary.missing} días sin registrar</small></article>
       </div>
       {metric === 'sleepMinutes' && <section className="panel sleep-insight" aria-labelledby="sleep-range-title"><h2 id="sleep-range-title">Tu rango observado</h2>
@@ -85,7 +90,7 @@ export default function HistoryPage() {
         <details><summary>Cómo se interpreta</summary><p>El color de la media representa la puntuación media de las noches del periodo con ambos datos; la duración media incluye todos los registros de duración.</p><p>El rango usa todo tu histórico hasta hoy. Selecciona el 25 % de noches mejor puntuadas (al menos cinco, incluyendo empates) y muestra los percentiles 25–75 de sus duraciones. Requiere 14 noches emparejadas y una diferencia de al menos 10 puntos entre puntuaciones.</p><p>Es una asociación exploratoria, no un algoritmo clínico validado ni una duración óptima demostrada. No modifica tu objetivo de sueño.</p></details>
       </section>}
       {metric === 'weightKg' && <p className="goal-summary">Cambio del periodo: <strong>{summary.change === undefined ? 'Faltan registros' : `${summary.change > 0 ? '+' : ''}${formatValue(summary.change, metric)}`}</strong></p>}
-      {metric !== 'sleepScore'  && metric !== 'weightKg' && <p className="goal-summary">{summary.eligible ? `${summary.achieved} de ${summary.eligible} días registrados con objetivo cumplido.` : 'Sin días registrados con objetivo para comparar.'} Los días sin registro no cuentan como cumplidos.</p>}
+      {metric !== 'sleepScore' && metric !== 'weightKg' && metric !== 'waterMl' && <p className="goal-summary">{summary.eligible ? `${summary.achieved} de ${summary.eligible} días registrados con objetivo cumplido.` : 'Sin días registrados con objetivo para comparar.'} Los días sin registro no cuentan como cumplidos.</p>}
       <section className="panel history-records"><h2>Registros del periodo</h2><p>Los días sin datos de esta métrica no aparecen en la tabla.</p>
         {rows.length ? <HistoryTable rows={rows} metric={metric} title={title} period={period} /> : <p>No hay registros para mostrar.</p>}
         <NavLink className="text-link" to="/registros">Ir al registro diario →</NavLink>

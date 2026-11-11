@@ -177,7 +177,7 @@ La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?d
 
 La paleta principal combina negro, gris y dorado tenue, incluido el icono α. Las cabeceras principales se limitan al nombre de cada pestaña.
 
-Resumen abre directamente el carrusel de las cinco métricas: agua, duración del sueño, puntuación del sueño, pasos y peso. Se puede cambiar de gráfica deslizando horizontalmente, con flechas, indicadores o las flechas del teclado al enfocar el carrusel. El periodo de 7/30/90 días es común y siempre termina en el día actual al abrir la pantalla. Se han retirado los selectores de métrica y fecha y la navegación por periodos anteriores.
+Resumen abre directamente el carrusel de las cinco métricas: peso, puntuación del sueño, duración del sueño, pasos y agua. Se puede cambiar de gráfica deslizando horizontalmente, con flechas, indicadores o las flechas del teclado al enfocar el carrusel. El periodo de 7/30/90 días es común y siempre termina en el día actual al abrir la pantalla. Se han retirado los selectores de métrica y fecha y la navegación por periodos anteriores.
 
 Bajo la gráfica se mantienen media, rango, días registrados/sin registrar y tabla del periodo, con enlace para editar cada fecha. El peso conserva su media móvil y el cambio entre extremos. Los controles del carrusel son accesibles y las diapositivas inactivas no capturan el foco.
 
@@ -198,3 +198,12 @@ La gráfica de puntuación tiene eje fijo de 0 a 100 (marcas 0/25/50/75/100). En
 La tarjeta de duración media conserva la media de todas las duraciones registradas del periodo, pero su color corresponde a la puntuación media de las noches del periodo con duración positiva y puntuación válidas. Se indica la puntuación y el número de noches emparejadas para no confundir la cobertura de ambos cálculos.
 
 El rango personal es **observacional y exploratorio**, no una estimación clínica validada de las horas óptimas. Usa todo el histórico hasta hoy, requiere al menos 14 noches con ambos datos y una amplitud de puntuación de al menos 10 puntos. Selecciona el 25 % de noches mejor puntuadas (mínimo cinco, incluyendo todos los empates en el corte) y muestra los percentiles 25–75 de sus duraciones. Así se reduce el efecto de extremos sin asumir que dormir más siempre mejora la calidad. Si faltan datos o las puntuaciones son muy similares, no se propone un rango. Estos umbrales son decisiones de producto, no límites fisiológicos. El objetivo configurado no se modifica.
+
+
+### Agua circular y medias coloreadas
+
+El orden del Resumen es Peso → Puntuación del sueño → Duración del sueño → Pasos → Agua. Agua muestra un anillo de progreso acumulado con meta fija de 3000 ml por día: 21/90/270 litros para 7/30/90 días. El total incluye únicamente los registros existentes; los días sin registrar no reducen la meta. El círculo se limita al 100 %, conserva el total real y muestra la cobertura. Esta meta visual no sobrescribe los objetivos históricos configurados que aparecen en la tabla.
+
+La media de puntuación del sueño utiliza su escala de puntos. La media de agua utiliza tramos absolutos: desde 3000 ml rosa/«Excelente», desde 2500 verde claro, desde 2000 verde oscuro, desde 1500 amarillo, desde 1000 marrón y por debajo rojo. La media continúa calculándose sobre los días registrados, con su cobertura visible; no se rellenan los días ausentes con ceros.
+
+Se han retirado las notas de huecos y el texto «Eje ajustado» de las gráficas. El eje del peso conserva su escala adaptada, sin esa etiqueta.
