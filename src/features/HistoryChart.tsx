@@ -27,7 +27,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   const axis = (v: number) => (metric === 'sleepMinutes' ? v / 60 : v).toLocaleString('es', { maximumFractionDigits: metric === 'weightKg' ? 1 : 0 })
   const unit = metric === 'sleepMinutes' ? 'horas' : metric === 'waterMl' ? 'ml' : metric === 'weightKg' ? 'kg' : metric === 'steps' ? 'pasos' : 'puntos'
   return <>
-    <p className="chart-unit">{unit}{metric === 'weightKg' && ' · Eje ajustado al rango del peso'}</p>
+    <p className="chart-unit">{unit}{metric === 'weightKg' && ' · Eje ajustado'}</p>
     <svg className="history-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Gráfica de evolución. Toca un registro para ver su detalle; también disponible en la tabla inferior.">
       {[0, 1, 2, 3].map(index => {
         const v = lo + (hi - lo) * index / 3
@@ -40,7 +40,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
       {[0, Math.floor((points.length - 1) / 2), points.length - 1].map(index => <text key={index} x={x(index)} y={H - 10} textAnchor={index === 0 ? 'start' : index === points.length - 1 ? 'end' : 'middle'}>{shortDate(points[index].date)}</text>)}
     </svg>
     <div className="chart-legend"><span><i className="legend-value" />Registro</span>{points.some(p => p.target !== undefined) && <span><i className="legend-goal" />Objetivo de cada día</span>}{metric === 'weightKg' && <span><i className="legend-average" />Media móvil de 7 días</span>}</div>
-    <p className="footnote">Los huecos son días sin registro, no ceros.{metric === 'weightKg' && ' La media móvil usa solo los registros de los últimos 7 días naturales.'}</p>
-    <p className="point-detail" role="status">{selected ? `${shortDate(selected.date)}: ${formatValue(selected.value, metric)}${selected.target === undefined ? ' · Sin objetivo' : ` · Objetivo: ${formatValue(selected.target, metric)}`}` : 'Toca un punto para ver su valor.'}</p>
+    <p className="footnote">Huecos: días sin registro.{metric === 'weightKg' && ' Media móvil: registros de los últimos 7 días.'}</p>
+    <p className={selected ? "point-detail" : "sr-only"} role="status">{selected ? `${shortDate(selected.date)}: ${formatValue(selected.value, metric)}${selected.target === undefined ? ' · Sin objetivo' : ` · Objetivo: ${formatValue(selected.target, metric)}`}` : ''}</p>
   </>
 }

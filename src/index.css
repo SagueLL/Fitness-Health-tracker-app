@@ -1,16 +1,16 @@
 :root {
   color-scheme: dark;
-  --bg: #080b10;
-  --surface: #111720;
-  --surface-raised: #18212e;
-  --surface-tint: #111f33;
-  --field: #0b1018;
-  --border: #273242;
-  --border-strong: #46566d;
-  --text: #eef2f8;
-  --muted: #a6b2c4;
-  --accent: #8ab8ff;
-  --primary: #2563eb;
+  --bg: #090909;
+  --surface: #131313;
+  --surface-raised: #1d1d1d;
+  --surface-tint: #242117;
+  --field: #0c0c0c;
+  --border: #303030;
+  --border-strong: #515151;
+  --text: #f2f0e9;
+  --muted: #b0b0aa;
+  --accent: #dec17e;
+  --primary: #d0ad60;
   --danger: #f8a5a5;
   --danger-bg: #291a21;
   --warning: #e8c48c;
@@ -30,5 +30,5 @@ button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 button { cursor: pointer; }
 button:disabled { cursor: default; opacity: .5; }
-input::placeholder, textarea::placeholder { color: #8290a4; opacity: 1; }
-::selection { background: #274f89; color: #fff; }
+input::placeholder, textarea::placeholder { color: #8d8d87; opacity: 1; }
+::selection { background: #63502c; color: #fff; }

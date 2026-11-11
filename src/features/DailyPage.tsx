@@ -125,8 +125,7 @@ export default function DailyPage() {
       document.removeEventListener('click', navigation, true)
     }
   }, [dirty])
-  return <><p className="eyebrow">TU DÍA, EN DATOS</p><h1>Registros</h1>
-    <p className="subtitle">Registra tus hábitos de hoy o completa un día anterior.</p>
+  return <><h1 className="page-title">Registros</h1>
     <div className="date-picker"><label htmlFor="record-date">Fecha del registro</label>
       <input id="record-date" type="date" value={date} max={localDate()} required onChange={event => {
         if (!event.target.value || event.target.value > localDate()) return

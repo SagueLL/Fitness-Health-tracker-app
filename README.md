@@ -119,7 +119,7 @@ npm run preview    # Servir la compilación localmente
 - Añadir agua rápidamente a la fecha seleccionada. En Registros → Objetivos y registro rápido se configura la cantidad por pulsación.
 - En Registros → Objetivos y registro rápido, configurar objetivos opcionales de agua, pasos, duración del sueño y peso de referencia. Cada versión empieza hoy o en una fecha futura; sustituir una versión con la misma fecha requiere confirmación. Dejar un objetivo vacío lo desactiva desde esa fecha.
 - En Registros, consultar los objetivos correspondientes a la fecha seleccionada.
-- En Resumen, seleccionar métrica, periodos de 7/30/90 días y fecha final; navegar por periodos anteriores y siguientes.
+- En Resumen, deslizar entre las cinco gráficas y elegir periodos de 7/30/90 días hasta hoy.
 - Consultar gráficas interactivas, medias, cobertura, rango y tabla de registros con enlaces para editar cada fecha. Para peso se muestran el cambio entre primer y último registro y una media móvil de siete días naturales.
 - Comparar con los objetivos vigentes cada día. Agua, pasos y sueño tienen comparación de cumplimiento; el peso solo tiene una referencia visual. La puntuación del sueño no tiene objetivo.
 - En Dieta → Mi dieta, crear fases con nombre, comidas y notas; escribir alimentos y cantidades en texto libre, editar y consultar fases independientes. El plan se presenta en tarjetas y no calcula nutrientes de los alimentos.
@@ -163,11 +163,20 @@ La edición actualiza la fase seleccionada, sin crear un historial de revisiones
 
 ### Interfaz Alpha y navegación
 
-Alpha utiliza un tema oscuro principal (negros, azul noche y grises), acentos azules y el símbolo griego α como marca e icono del navegador. No hay selector de tema por ahora.
+Alpha utiliza un tema oscuro principal (negros y grises), acentos dorados y el símbolo griego α como marca e icono del navegador. No hay selector de tema por ahora.
 
-1. **Resumen** (`/#/`): pantalla inicial con gráficas, medias, cobertura y consulta del histórico. La selección de los datos destacados y su distribución se concretará en una siguiente revisión.
+1. **Resumen** (`/#/`): pantalla inicial con gráficas, medias, cobertura y consulta del histórico. Gráficas deslizables por métrica y selector compartido de 7/30/90 días, seguido de medias, rangos y registros.
 2. **Registros** (`/#/registros`): agua, duración/calidad del sueño, pasos y peso por fecha. Al final, «Objetivos y registro rápido» agrupa los objetivos básicos y la cantidad del botón de agua.
 3. **Dieta** (`/#/dieta`): Mi dieta y Calculadora, con edición, duplicación y comparación de fases.
 4. **Ajustes** (`/#/ajustes`): espacio reservado para configuración futura, sin formularios ni información personal.
 
 La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?date=…` abren el registro correspondiente. El nombre interno de IndexedDB se conserva para seguir accediendo a todos los datos existentes; el cambio de marca no requiere migración. Instalación PWA y carga sin conexión siguen pendientes.
+
+
+### Resumen visual y paleta dorada
+
+La paleta principal combina negro, gris y dorado tenue, incluido el icono α. Las cabeceras principales se limitan al nombre de cada pestaña.
+
+Resumen abre directamente el carrusel de las cinco métricas: agua, duración del sueño, puntuación del sueño, pasos y peso. Se puede cambiar de gráfica deslizando horizontalmente, con flechas, indicadores o las flechas del teclado al enfocar el carrusel. El periodo de 7/30/90 días es común y siempre termina en el día actual al abrir la pantalla. Se han retirado los selectores de métrica y fecha y la navegación por periodos anteriores.
+
+Bajo la gráfica se mantienen media, rango, días registrados/sin registrar y tabla del periodo, con enlace para editar cada fecha. El peso conserva su media móvil y el cambio entre extremos. Los controles del carrusel son accesibles y las diapositivas inactivas no capturan el foco.

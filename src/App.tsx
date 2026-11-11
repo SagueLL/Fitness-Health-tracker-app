@@ -23,8 +23,8 @@ function Home() {
   return params.has('date') ? <Navigate to={`/registros?${params.toString()}`} replace /> : <HistoryPage />
 }
 function Settings() {
-  return <><p className="eyebrow">TU ALPHA</p><h1>Ajustes</h1><p className="subtitle">Un espacio para personalizar tu experiencia.</p>
-    <section className="panel settings-empty"><span className="settings-symbol" aria-hidden="true">α</span><h2>Próximamente</h2><p>Aquí encontrarás las opciones de configuración de Alpha.</p></section>
+  return <><h1 className="page-title">Ajustes</h1>
+    <section className="panel settings-empty"><span className="settings-symbol" aria-hidden="true">α</span><h2>Próximamente</h2></section>
   </>
 }
 function NotFound() {
@@ -33,7 +33,7 @@ function NotFound() {
 
 export default function App() {
   return <HashRouter><RouteScrollReset /><a className="skip-link" href="#main" onClick={event => { event.preventDefault(); document.getElementById('main')?.focus() }}>Saltar al contenido</a>
-    <div className="app-shell"><header className="brand"><NavLink to="/" aria-label="Alpha, inicio"><span className="brand-mark" aria-hidden="true">α</span><span className="brand-name">Alpha</span></NavLink><span className="personal-label"><i aria-hidden="true" /> ESPACIO PERSONAL</span></header>
+    <div className="app-shell"><header className="brand"><NavLink to="/" aria-label="Alpha, inicio"><span className="brand-mark" aria-hidden="true">α</span><span className="brand-name">Alpha</span></NavLink><span className="personal-label"><i aria-hidden="true" /> PERSONAL</span></header>
       <main id="main" tabIndex={-1}><Routes>
         <Route path="/" element={<Home />} />
         <Route path="/registros" element={<DailyPage />} />

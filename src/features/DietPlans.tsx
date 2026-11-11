@@ -92,7 +92,7 @@ export default function DietPlans() {
     finally { setBusy(false) }
   }
   return <>
-    <div className="diet-plan-heading"><div><p className="eyebrow">HECHA POR TI</p><h2 ref={heading} tabIndex={-1}>Mis fases de dieta</h2></div>{ready && !editor && <button className="button" disabled={busy} onClick={() => { setComparison(undefined); setEditor({}); setStatus(''); setError('') }}>Crear fase</button>}</div>
+    <div className="diet-plan-heading"><div><h2 ref={heading} tabIndex={-1}>Mis fases de dieta</h2></div>{ready && !editor && <button className="button" disabled={busy} onClick={() => { setComparison(undefined); setEditor({}); setStatus(''); setError('') }}>Crear fase</button>}</div>
     {!ready && !error && <p role="status">Cargando tus fases…</p>}
     {!ready && error && <button type="button" className="button" onClick={() => { setError(''); setAttempt(value => value + 1) }}>Reintentar fases</button>}
     {editor ? <DietEditor key={editor.phase?.id ?? 'new'} phase={editor.phase} onCancel={closeEditor} onSave={saved => {

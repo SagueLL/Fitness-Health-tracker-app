@@ -205,3 +205,13 @@ Por petición del propietario, el producto se llama Alpha y utiliza α como sím
 - Logotipo α, favicon SVG y título Alpha; no se cambia el nombre de la base local ni se migran los datos por el cambio visual. Se mantienen enlaces antiguos mediante redirecciones.
 - Al cambiar de sección la vista vuelve al inicio. La PWA queda para la siguiente etapa.
 - Validación: 31 pruebas de dominio/persistencia, 13 recorridos en Chromium móvil, compilación y lint. Revisión visual de pantallas móviles y escritorio.
+
+
+## Revisión visual: dorado y carrusel de métricas
+
+- Se sustituye el azul por dorado tenue y se neutralizan las superficies hacia negros y grises, manteniendo los colores semánticos de error/aviso. Logo y favicon siguen la paleta.
+- Cabeceras principales reducidas a Resumen, Registros, Dieta y Ajustes.
+- Resumen empieza con las cinco gráficas deslizables; permite gesto horizontal, indicadores, flechas y teclado. El selector de 7/30/90 días queda debajo y se comparte entre métricas.
+- Se retiran el selector de métrica, el filtro de fecha final y los botones de navegación temporal. Los periodos terminan hoy al abrir la pantalla.
+- Se conservan medias, rangos, cobertura, cumplimiento, detalle de puntos y tabla con acceso a edición; el peso mantiene su media móvil y diferencia del periodo. No cambia la persistencia.
+- Verificado con 31 pruebas de dominio/persistencia, 14 recorridos de navegador (incluido desplazamiento y teclado del carrusel), lint y build.
