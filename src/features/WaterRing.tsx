@@ -10,8 +10,6 @@ export default function WaterRing({ points }: { points: HistoryPoint[] }) {
       <svg viewBox="0 0 240 240" aria-hidden="true"><circle className="water-ring-track" cx="120" cy="120" r="98" /><circle className="water-ring-fill" cx="120" cy="120" r="98" pathLength="100" strokeDasharray={`${progress.fraction * 100} 100`} transform="rotate(-90 120 120)" /></svg>
       <div className="water-ring-value"><strong>{percent} %</strong><span>{liters(progress.totalMl)} / {liters(progress.targetMl)} L</span></div>
     </div>
-    <p className="water-ring-goal">Meta: 3 L/día · {points.length} días</p>
-    <p className="water-ring-caption">{progress.reached ? 'Meta del periodo alcanzada' : progress.count ? `${liters(Math.max(0, progress.targetMl - progress.totalMl))} L para completar la meta` : 'Sin registros de agua'}</p>
-    <small>{progress.count} de {points.length} días registrados</small>
+
   </div>
 }

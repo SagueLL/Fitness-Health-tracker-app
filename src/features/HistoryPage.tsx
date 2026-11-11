@@ -65,7 +65,7 @@ export default function HistoryPage() {
     const track = carousel.current
     if (!track) return
     const slide = track.children[index] as HTMLElement
-    track.scrollTo({ left: slide.offsetLeft, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })
+    track.scrollTo({ left: slide.offsetLeft, behavior: 'instant' })
   }
   return <><h1 className="page-title">Resumen</h1>
     {error ? <section className="panel"><p role="alert">{error}</p><button className="button" onClick={() => changeRange(() => setAttempt(value => value + 1))}>Reintentar histórico</button></section> : <>
