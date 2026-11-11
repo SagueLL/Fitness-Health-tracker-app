@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { Metric } from '../domain/daily'
 import { formatValue, shortDate, type HistoryPoint } from '../domain/history'
 
-const W = 640, H = 300, left = 64, right = 18, top = 20, bottom = 44
+const W = 640, H = 300, left = 94, right = 24, top = 22, bottom = 54
 export default function HistoryChart({ points, metric }: { points: HistoryPoint[]; metric: Metric }) {
   const [selectedDate, setSelectedDate] = useState<string>()
   const selected = points.find(point => point.date === selectedDate)
@@ -30,7 +30,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
     <p className="chart-unit">{unit}</p>
     <svg className="history-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Gráfica de evolución. Toca un registro para ver su detalle; también disponible en la tabla inferior.">
       {(metric === 'sleepScore' ? [0, 25, 50, 75, 100] : [lo, lo + (hi - lo) / 3, lo + 2 * (hi - lo) / 3, hi]).map((v, index) => {
-        return <g key={index}><line x1={left} x2={W - right} y1={y(v)} y2={y(v)} className="chart-grid" /><text x={left - 10} y={y(v) + 4} textAnchor="end">{axis(v)}</text></g>
+        return <g key={index}><line x1={left} x2={W - right} y1={y(v)} y2={y(v)} className="chart-grid" /><text x={left - 10} y={y(v) + 6} textAnchor="end">{axis(v)}</text></g>
       })}
       <path d={path('target')} className="chart-goal" />
       {metric === 'weightKg' && <path d={path('movingAverage')} className="chart-average" />}

@@ -210,3 +210,6 @@ Se han retirado las notas de huecos y el texto «Eje ajustado» de las gráficas
 
 
 El anillo de agua y su porcentaje comparten un color por progreso: 0–<10 % rojo, 10–<20 % rojo claro, 20–<30 % marrón, 30–<40 % naranja, 40–<50 % naranja claro, 50–<60 % amarillo, 60–<70 % amarillo claro, 70–<80 % amarillo oscuro, 80–<90 % verde oscuro y 90–<100 % verde claro. Desde el 100 % se utiliza rosa/fucsia. La pista vacía queda teñida suavemente del mismo color para que el 0 % también se vea rojo, sin simular progreso.
+
+
+El carrusel ajusta su altura al contenido de la gráfica activa: las cuatro gráficas de líneas son compactas y Agua conserva el espacio de su anillo. La altura se recalcula al cambiar de métrica, periodo, ancho o detalle seleccionado. Se han ampliado los textos de ejes y los márgenes del SVG para mejorar su lectura en móvil.

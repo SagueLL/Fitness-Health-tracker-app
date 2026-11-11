@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import WaterRing from './WaterRing'
 import { waterAverageTone } from '../domain/water'
@@ -43,6 +43,18 @@ export default function HistoryPage() {
   const sleepAverage = averageSleepScore(data.records, start, end)
   const sleepTone = metric === 'sleepMinutes' ? historyTone('sleepScore', sleepAverage.score) : undefined
   const sleepRange = observedSleepRange(sleepRecords, end)
+  useLayoutEffect(() => {
+    const track = carousel.current
+    const slide = track?.children[active] as HTMLElement | undefined
+    if (!track || !slide) return
+    const resize = () => {
+      track.style.height = `${Math.ceil(slide.getBoundingClientRect().height)}px`
+    }
+    resize()
+    const observer = new ResizeObserver(resize)
+    observer.observe(slide)
+    return () => observer.disconnect()
+  }, [active, error])
   function changeRange(action: () => void) { setLoading(true); setError(''); action() }
   const points = buildHistory(data.records, data.goals, metric, start, end)
   const summary = summarize(points)
