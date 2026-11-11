@@ -197,3 +197,23 @@ test('agua circular, medias por colores y nuevo orden del carrusel', async ({ pa
   await expect(page.getByRole('progressbar')).toContainText('21 / 270 L')
   await expect(page.getByText(/Huecos:|Eje ajustado/)).toHaveCount(0)
 })
+
+test('los cinco paneles comparten exactamente la altura de las gráficas de líneas', async ({ page }) => {
+  await seed(page)
+  await page.getByRole('navigation').getByRole('link', { name: 'Resumen', exact: true }).click()
+  await expect(page.getByRole('table')).toBeVisible()
+  for (const width of [360, 390, 1280]) {
+    await page.setViewportSize({ width, height: 900 })
+    await expect.poll(() => page.locator('.metric-slide').evaluateAll(slides => {
+      const heights = slides.map(slide => slide.getBoundingClientRect().height)
+      return heights.every(height => height > 200 && Math.abs(height - heights[0]) < .1)
+    })).toBe(true)
+    await page.getByRole('button', { name: 'Ver agua', exact: true }).click()
+    await expect(page.getByRole('progressbar')).toBeVisible()
+    await expect.poll(() => page.locator('.metric-carousel').evaluate(track => {
+      const water = track.children[4].getBoundingClientRect()
+      return Math.abs(track.getBoundingClientRect().height - water.height) < .1
+    })).toBe(true)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
+  }
+})

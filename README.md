@@ -212,7 +212,10 @@ Se han retirado las notas de huecos y el texto «Eje ajustado» de las gráficas
 El anillo de agua y su porcentaje comparten un color por progreso: 0–<10 % rojo, 10–<20 % rojo claro, 20–<30 % marrón, 30–<40 % naranja, 40–<50 % naranja claro, 50–<60 % amarillo, 60–<70 % amarillo claro, 70–<80 % amarillo oscuro, 80–<90 % verde oscuro y 90–<100 % verde claro. Desde el 100 % se utiliza rosa/fucsia. La pista vacía queda teñida suavemente del mismo color para que el 0 % también se vea rojo, sin simular progreso.
 
 
-El carrusel ajusta su altura al contenido de la gráfica activa: las gráficas de líneas y el anillo de Agua usan recuadros compactos. La altura se recalcula al cambiar de métrica, periodo, ancho o detalle seleccionado. Se han ampliado los textos de ejes y los márgenes del SVG para mejorar su lectura en móvil.
+Los cinco paneles del carrusel comparten exactamente la misma altura en píxeles, calculada a partir del contenido de las cuatro gráficas de líneas, sin usar Agua como referencia. La altura se recalcula al cambiar de métrica, periodo, ancho o detalle seleccionado. Se han ampliado los textos de ejes y los márgenes del SVG para mejorar su lectura en móvil.
 
 
-El gráfico de agua se presenta compacto: solo título, fechas y anillo con porcentaje y litros en el centro. Se han retirado los textos inferiores de meta, cantidad pendiente y cobertura, que sigue disponible en la tarjeta de media. El círculo ocupa una zona de 200 px para mantener una altura compacta, comparable a las otras gráficas en móvil.
+El gráfico de agua se presenta compacto: solo título, fechas y anillo con porcentaje y litros en el centro. Se han retirado los textos inferiores de meta, cantidad pendiente y cobertura, que sigue disponible en la tarjeta de media. El círculo mantiene sus 200 px dentro de un panel cuya altura se iguala exactamente a la de las otras cuatro gráficas, centrado en el espacio disponible.
+
+
+La igualdad de alturas está comprobada automáticamente en anchos de 360, 390 y 1280 px, incluyendo el panel de Agua y el contenedor del carrusel.

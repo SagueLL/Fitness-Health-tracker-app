@@ -45,16 +45,22 @@ export default function HistoryPage() {
   const sleepRange = observedSleepRange(sleepRecords, end)
   useLayoutEffect(() => {
     const track = carousel.current
-    const slide = track?.children[active] as HTMLElement | undefined
-    if (!track || !slide) return
+    if (!track) return
+    const lineSlides = Array.from(track.children).slice(0, 4) as HTMLElement[]
+    const contents = lineSlides.map(slide => slide.querySelector('.metric-slide-content') as HTMLElement)
     const resize = () => {
-      track.style.height = `${Math.ceil(slide.getBoundingClientRect().height)}px`
+      const height = Math.ceil(Math.max(...lineSlides.map((slide, index) => {
+        const style = getComputedStyle(slide)
+        return contents[index].getBoundingClientRect().height + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) + parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth)
+      })))
+      track.style.setProperty('--metric-panel-height', `${height}px`)
+      track.style.height = `${height}px`
     }
     resize()
     const observer = new ResizeObserver(resize)
-    observer.observe(slide)
+    contents.forEach(content => observer.observe(content))
     return () => observer.disconnect()
-  }, [active, error])
+  }, [error])
   function changeRange(action: () => void) { setLoading(true); setError(''); action() }
   const points = buildHistory(data.records, data.goals, metric, start, end)
   const summary = summarize(points)
@@ -83,8 +89,8 @@ export default function HistoryPage() {
           setActive(distances.indexOf(Math.min(...distances)))
         }}>
           {metrics.map((item, index) => <section className="panel chart-panel metric-slide" key={item.key} aria-label={`Gráfica de ${item.label.toLowerCase()}`} aria-hidden={index !== active} inert={index !== active}>
-            <header className="metric-slide-header"><h2>{item.label}</h2><span>{shortDate(start)} – {shortDate(end)}</span></header>
-            {item.key === 'waterMl' ? <WaterRing points={buildHistory(data.records, data.goals, item.key, start, end)} /> : <HistoryChart key={`${item.key}-${start}-${end}`} points={buildHistory(data.records, data.goals, item.key, start, end)} metric={item.key} />}
+            <div className={`metric-slide-content${item.key === 'waterMl' ? ' water-slide-content' : ''}`}><header className="metric-slide-header"><h2>{item.label}</h2><span>{shortDate(start)} – {shortDate(end)}</span></header>
+            {item.key === 'waterMl' ? <WaterRing points={buildHistory(data.records, data.goals, item.key, start, end)} /> : <HistoryChart key={`${item.key}-${start}-${end}`} points={buildHistory(data.records, data.goals, item.key, start, end)} metric={item.key} />}</div>
           </section>)}
         </div>
         <div className="metric-dots" aria-label="Elegir gráfica">{metrics.map((item, index) => <button type="button" key={item.key} aria-label={`Ver ${item.label.toLowerCase()}`} aria-pressed={index === active} onClick={() => showMetric(index)}><span /></button>)}</div>

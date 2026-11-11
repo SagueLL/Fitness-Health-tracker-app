@@ -142,3 +142,10 @@ select option { background: var(--surface); }
 
 .metric-slide .chart-unit { font-size: 13px; }.metric-slide .chart-legend { font-size: 12px; }
 @media (min-width: 600px) { .history-chart text { font-size: 20px; } }
+
+/* Use the measured line-chart height for every panel, including Water. */
+.metric-slide { height: var(--metric-panel-height, auto); display: flex; flex-direction: column; }
+.metric-slide-content { flex: 0 0 auto; min-width: 0; }
+.water-slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.water-slide-content .water-ring-panel { flex: 1; height: auto; min-height: 0; }
+.water-slide-content .water-ring { width: 200px; height: 200px; max-width: 100%; max-height: 100%; }
