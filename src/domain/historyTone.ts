@@ -9,8 +9,9 @@ export const toneBands = [
   { tone: 'red', label: '0–<50', min: 0 },
 ] as const
 
-export function historyTone(metric: Metric, value: number | undefined, target?: number) {
+export function historyTone(metric: Metric, value: number | undefined, target?: number, sleepScore?: number): ((typeof toneBands)[number] & { score: number }) | undefined {
   if (metric === 'weightKg' || value === undefined || !Number.isFinite(value) || value < 0) return undefined
+  if (metric === 'sleepMinutes') return sleepScore !== undefined && sleepScore >= 0 && sleepScore <= 100 ? historyTone('sleepScore', sleepScore) : undefined
   if (metric !== 'sleepScore' && (target === undefined || !Number.isFinite(target) || target <= 0)) return undefined
   const score = metric === 'sleepScore' ? value : value / target! * 100
   return { ...toneBands.find(band => Math.min(100, score) >= band.min)!, score }

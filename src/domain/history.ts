@@ -14,12 +14,12 @@ export function datesBetween(start: string, end: string) {
   return days
 }
 
-export interface HistoryPoint { date: string; value?: number; target?: number; movingAverage?: number }
+export interface HistoryPoint { date: string; value?: number; target?: number; movingAverage?: number; sleepScore?: number }
 export function buildHistory(records: DailyRecord[], goals: Goals[], metric: Metric, start: string, end: string): HistoryPoint[] {
   const byDate = new Map(records.map(record => [record.date, record]))
   return datesBetween(start, end).map(date => {
     const values = metric === 'weightKg' ? datesBetween(shiftDate(date, -6), date).map(day => byDate.get(day)?.weightKg).filter((v): v is number => v !== undefined) : []
-    return { date, value: byDate.get(date)?.[metric], target: targetFor(goals, date, metric), movingAverage: values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : undefined }
+    return { date, sleepScore: byDate.get(date)?.sleepScore, value: byDate.get(date)?.[metric], target: targetFor(goals, date, metric), movingAverage: values.length ? values.reduce((sum, v) => sum + v, 0) / values.length : undefined }
   })
 }
 

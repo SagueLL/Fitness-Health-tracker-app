@@ -186,6 +186,15 @@ Bajo la gráfica se mantienen media, rango, días registrados/sin registrar y ta
 
 Las tablas del Resumen muestran hasta cinco registros completos, con cabecera fija y desplazamiento vertical para acceder a los restantes. La altura se ajusta a las filas reales y al ancho de pantalla; no se recortan ni se eliminan registros.
 
-Escala visual de puntuación del sueño: 90–100 rosa/fucsia, 80–<90 verde claro, 70–<80 verde oscuro, 60–<70 amarillo, 50–<60 marrón y 0–<50 rojo. El límite 90 pertenece al tramo rosa y el 80 al verde claro. Para agua, pasos y duración del sueño se aplica la misma escala al porcentaje del objetivo vigente en cada fecha. Sin objetivo se usa color neutro; el peso también se mantiene neutro. Superar el 100 % no aumenta el nivel de color ni implica una recomendación de aumentar la cantidad. Cada tabla incluye una leyenda y conserva los valores numéricos.
+Escala visual de puntuación del sueño: 90–100 rosa/fucsia, 80–<90 verde claro, 70–<80 verde oscuro, 60–<70 amarillo, 50–<60 marrón y 0–<50 rojo. El límite 90 pertenece al tramo rosa y el 80 al verde claro. Para agua y pasos se aplica la misma escala al porcentaje del objetivo vigente en cada fecha. La duración del sueño utiliza la puntuación de sueño de esa misma fecha, no su porcentaje de objetivo. Sin objetivo se usa color neutro; el peso también se mantiene neutro. Superar el 100 % no aumenta el nivel de color ni implica una recomendación de aumentar la cantidad. Cada tabla incluye una leyenda y conserva los valores numéricos.
 
 Los acentos principales usan ahora amarillo brillante sobre negros y grises. El nombre Alpha se presenta más grande, en negrita y cursiva, con fuentes locales y sin descargas externas.
+
+
+### Duración y calidad del sueño
+
+La gráfica de puntuación tiene eje fijo de 0 a 100 (marcas 0/25/50/75/100). En la tabla de duración, la columna Calidad muestra la puntuación de la misma fecha y determina el color de la fila. Una duración sin puntuación queda neutra, aunque tenga objetivo.
+
+La tarjeta de duración media conserva la media de todas las duraciones registradas del periodo, pero su color corresponde a la puntuación media de las noches del periodo con duración positiva y puntuación válidas. Se indica la puntuación y el número de noches emparejadas para no confundir la cobertura de ambos cálculos.
+
+El rango personal es **observacional y exploratorio**, no una estimación clínica validada de las horas óptimas. Usa todo el histórico hasta hoy, requiere al menos 14 noches con ambos datos y una amplitud de puntuación de al menos 10 puntos. Selecciona el 25 % de noches mejor puntuadas (mínimo cinco, incluyendo todos los empates en el corte) y muestra los percentiles 25–75 de sus duraciones. Así se reduce el efecto de extremos sin asumir que dormir más siempre mejora la calidad. Si faltan datos o las puntuaciones son muy similares, no se propone un rango. Estos umbrales son decisiones de producto, no límites fisiológicos. El objetivo configurado no se modifica.

@@ -224,3 +224,13 @@ Por petición del propietario, el producto se llama Alpha y utiliza α como sím
 - Leyenda desplegable y etiquetas textuales accesibles; no se comunica el tramo únicamente mediante color. La escala es visual, no diagnóstica, y no incrementa el nivel por encima del 100 %.
 - Amarillo principal más vivo y marca Alpha más grande, con peso 900 y cursiva. No cambia la persistencia.
 - Verificación: 33 pruebas de dominio/persistencia, 15 recorridos de navegador, lint, compilación y revisión visual móvil.
+
+
+## Sueño: eje acotado, colores vinculados y rango observado
+
+- Gráfica de puntuación con eje 0–100 y marcas cada 25 puntos.
+- Duraciones coloreadas por la puntuación de la misma fecha; columna Calidad y leyenda actualizadas. Ausencias mantienen tono neutro.
+- Media de duración coloreada por puntuación media de las noches emparejadas del periodo; se mantienen independientes las coberturas de duración y calidad.
+- Heurística exploratoria del histórico completo: al menos 14 noches con duración positiva/puntuación y variación de al menos 10 puntos; rango intercuartílico de la cuarta parte de noches mejor puntuadas, mínimo cinco y con empates. No propone resultados cuando faltan datos o contraste.
+- Se muestra como asociación observada, sin prescripción ni cambio automático de objetivos. Umbrales operativos documentados; no es un algoritmo clínico validado. Sin cambios del esquema local.
+- Validación: 37 pruebas de dominio/persistencia, 15 recorridos de navegador, lint, compilación y revisión visual del rango con histórico suficiente.

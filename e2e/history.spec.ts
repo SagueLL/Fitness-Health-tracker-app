@@ -119,7 +119,7 @@ test('tabla limitada a cinco filas, colores por tramo y acceso a los registros r
       const tx = db.transaction('dailyRecords', 'readwrite')
       for (const [index, sleepScore] of [95, 85, 75, 65, 55, 45, 90, 80].entries()) {
         const date = new Date(`${today}T12:00:00`); date.setDate(date.getDate() - index)
-        tx.objectStore('dailyRecords').put({ date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, sleepScore, waterMl: 1800, createdAt: '', updatedAt: '' })
+        tx.objectStore('dailyRecords').put({ date: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, sleepScore, sleepMinutes: 420 + index * 5, waterMl: 1800, createdAt: '', updatedAt: '' })
       }
       tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error)
     })
@@ -138,6 +138,18 @@ test('tabla limitada a cinco filas, colores por tramo y acceso a los registros r
     return Math.abs(element.clientHeight - (fifth.bottom - element.getBoundingClientRect().top)) < 3
   })).toBe(true)
   expect(await table.evaluate(element => element.scrollHeight > element.clientHeight)).toBe(true)
+  await page.getByRole('button', { name: 'Ver duración del sueño', exact: true }).click()
+  const durations = page.getByRole('region', { name: /^Tabla de duración del sueño/ })
+  for (const [index, tone] of ['pink', 'lime', 'green', 'yellow', 'brown', 'red', 'pink', 'lime'].entries()) {
+    await expect(durations.locator('tbody tr').nth(index)).toHaveClass(new RegExp(`tone-${tone}`))
+  }
+  await expect(durations.getByRole('columnheader', { name: 'Calidad', exact: true })).toBeVisible()
+  await expect(page.locator('.sleep-average')).toHaveClass(/tone-green/)
+  await expect(page.getByRole('region', { name: 'Tu rango observado' })).toContainText('8 de 14')
+  await page.getByRole('button', { name: 'Ver puntuación del sueño', exact: true }).click()
+  const chart = page.getByRole('region', { name: 'Gráfica de puntuación del sueño', exact: true })
+  await expect(chart.locator('svg text').filter({ hasText: /^100$/ })).toHaveCount(1)
+  await expect(chart.locator('svg text').filter({ hasText: /^125$/ })).toHaveCount(0)
   await table.evaluate(element => { element.scrollTop = element.scrollHeight })
   expect(await table.evaluate(element => element.scrollTop)).toBeGreaterThan(0)
   const date = shiftDate(today, -7)

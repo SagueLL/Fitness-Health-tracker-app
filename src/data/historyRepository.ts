@@ -21,3 +21,7 @@ export async function readHistory(start: string, end: string, db = database) {
     goals: await readGoals(db),
   }))
 }
+
+export async function readSleepHistory(db = database) {
+  return (await db.dailyRecords.toArray()).map(({ date, sleepMinutes, sleepScore }) => ({ date, sleepMinutes, sleepScore }))
+}

@@ -10,7 +10,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   if (!points.some(point => point.value !== undefined)) return <div className="chart-empty"><h3>Aún no hay registros en este periodo.</h3><p>Prueba otro periodo o añade un registro desde Registros.</p></div>
   const max = Math.max(...values), min = metric === 'weightKg' ? Math.min(...values) : 0
   const padding = Math.max((max - min) * .12, metric === 'weightKg' ? .5 : 1)
-  const lo = metric === 'weightKg' ? Math.max(0, min - padding) : 0, hi = max + padding
+  const lo = metric === 'weightKg' ? Math.max(0, min - padding) : 0, hi = metric === 'sleepScore' ? 100 : max + padding
   const x = (i: number) => left + i * (W - left - right) / Math.max(1, points.length - 1)
   const y = (v: number) => top + (hi - v) * (H - top - bottom) / (hi - lo)
   function path(key: 'value' | 'target' | 'movingAverage') {
@@ -29,8 +29,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   return <>
     <p className="chart-unit">{unit}{metric === 'weightKg' && ' · Eje ajustado'}</p>
     <svg className="history-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Gráfica de evolución. Toca un registro para ver su detalle; también disponible en la tabla inferior.">
-      {[0, 1, 2, 3].map(index => {
-        const v = lo + (hi - lo) * index / 3
+      {(metric === 'sleepScore' ? [0, 25, 50, 75, 100] : [lo, lo + (hi - lo) / 3, lo + 2 * (hi - lo) / 3, hi]).map((v, index) => {
         return <g key={index}><line x1={left} x2={W - right} y1={y(v)} y2={y(v)} className="chart-grid" /><text x={left - 10} y={y(v) + 4} textAnchor="end">{axis(v)}</text></g>
       })}
       <path d={path('target')} className="chart-goal" />

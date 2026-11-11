@@ -133,3 +133,5 @@ select option { background: var(--surface); }
 .table-hint { font-size: 11px !important; color: var(--muted); margin-bottom: 8px; }
 .tone-legend { margin-top: 16px; font-size: 12px; }.tone-legend summary { cursor: pointer; padding: 10px 0; color: var(--muted); }.tone-legend p { font-size: 12px; }.tone-legend ul { list-style: none; display: flex; flex-wrap: wrap; gap: 12px 18px; padding: 0; }.tone-legend li { display: flex; align-items: center; gap: 6px; }.tone-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--tone-color); }
 @media (max-width: 480px) { .brand-name { font-size: 30px; }.brand-mark { width: 44px; height: 44px; font-size: 39px; } }
+
+.summary-grid .sleep-average { background: var(--tone-bg); border-color: var(--tone-color); }.summary-grid .sleep-average strong { color: var(--tone-color); }.sleep-average small + small { margin-top: 8px; line-height: 1.5; }.sleep-insight h2 { font-size: 18px; }.sleep-range-value { font-size: 22px; }.sleep-insight details { font-size: 12px; }.sleep-insight summary { cursor: pointer; padding: 10px 0; }
