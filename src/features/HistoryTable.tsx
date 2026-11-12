@@ -24,7 +24,7 @@ export default function HistoryTable({ rows, metric, title, period }: { rows: Hi
   }, [metric, period, rows])
   return <>
     <div ref={container} className="table-scroll history-table-scroll" role="region" aria-label={`Tabla de ${title.toLowerCase()}${rows.length > 5 ? ', desplázate para ver más registros' : ''}`} tabIndex={rows.length > 5 ? 0 : undefined}>
-      <table ref={table}><caption className="sr-only">{title}: {showObjective ? 'valores y objetivos' : 'registros'} por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th>{showObjective && <th scope="col">Objetivo</th>}</tr></thead><tbody>{rows.map(point => {
+      <table ref={table} className={metric === 'sleepScore' || metric === 'sleepMinutes' ? 'sleep-records' : undefined}><caption className="sr-only">{title}: {showObjective ? 'valores y objetivos' : 'registros'} por fecha</caption><thead><tr><th scope="col">Fecha</th><th scope="col">Registro</th>{showObjective && <th scope="col">Objetivo</th>}</tr></thead><tbody>{rows.map(point => {
         const band = historyTone(metric, point.value, point.target, point.sleepScore)
         return <tr key={point.date} className={band ? `record-tone tone-${band.tone}` : undefined}>
           <th scope="row"><NavLink to={`/registros?date=${point.date}`} aria-label={`Editar registro del ${point.date}`}>{shortDate(point.date)}<small>{point.date.slice(0, 4)}</small></NavLink></th>
@@ -33,7 +33,6 @@ export default function HistoryTable({ rows, metric, title, period }: { rows: Hi
         </tr>
       })}</tbody></table>
     </div>
-    {rows.length > 5 && <p className="table-hint">Desliza la tabla para ver los {rows.length} registros.</p>}
     {metric !== 'weightKg' && <details className="tone-legend"><summary>Escala de colores</summary>
       <p>{metric === 'sleepMinutes' ? 'Color según la puntuación de sueño de la misma fecha. Sin puntuación, color neutro.' : metric === 'sleepScore' ? 'Puntuación de sueño (0–100).' : 'Porcentaje del objetivo vigente en cada fecha. Sin objetivo, color neutro.'}</p>
       <ul>{toneBands.map(band => <li key={band.tone}><span className={`tone-dot tone-${band.tone}`} />{band.label}{metric === 'sleepScore' || metric === 'sleepMinutes' ? ' puntos de sueño' : ' %'}</li>)}</ul>

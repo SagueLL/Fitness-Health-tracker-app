@@ -8,10 +8,11 @@ import { formatValue } from '../domain/history'
 import { readPreferences, type DailyRecord } from '../data/database'
 import { addWater, readDaily, saveDaily } from '../data/dailyRepository'
 import { localDate, validateDate, metrics, parseValue, ValidationError, valuesOf, type Metric } from '../domain/daily'
+import { formatSleepDuration, parseSleepDuration } from '../domain/sleepDuration'
 
 type Fields = Record<Metric, string>
 function fieldsOf(record?: DailyRecord): Fields {
-  return Object.fromEntries(metrics.map(({ key }) => [key, record?.[key]?.toString().replace('.', ',') ?? ''])) as Fields
+  return Object.fromEntries(metrics.map(({ key }) => [key, key === 'sleepMinutes' ? formatSleepDuration(record?.sleepMinutes) : record?.[key]?.toString().replace('.', ',') ?? ''])) as Fields
 }
 
 function DailyEditor({ date, onDirty, waterAmount, goalRevision }: { date: string; onDirty: (dirty: boolean) => void; waterAmount?: number; goalRevision: number }) {
@@ -56,7 +57,7 @@ function DailyEditor({ date, onDirty, waterAmount, goalRevision }: { date: strin
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     try {
-      const values = Object.fromEntries(metrics.map(({ key }) => [key, parseValue(fields[key])]))
+      const values = Object.fromEntries(metrics.map(({ key }) => [key, key === 'sleepMinutes' ? parseSleepDuration(fields[key]) : parseValue(fields[key])]))
       const removed = metrics.some(({ key }) => record?.[key] !== undefined && values[key] === undefined)
       if (removed && !window.confirm('Se borrarán los valores que has dejado vacíos. ¿Guardar los cambios?')) return
       void persist(() => saveDaily(date, values), 'Registro guardado en este dispositivo.')
@@ -72,10 +73,10 @@ function DailyEditor({ date, onDirty, waterAmount, goalRevision }: { date: strin
         <fieldset disabled={loading || saving || !ready}>
           <div className="daily-fields">
             {metrics.map(metric => <div className="daily-field" key={metric.key}>
-              <label htmlFor={metric.key}>{metric.label} ({metric.unit})</label>
+              <label htmlFor={metric.key}>{metric.label} ({metric.key === 'sleepMinutes' ? 'HH:mm' : metric.unit})</label>
               {metric.key !== 'sleepScore' && goals?.[metric.key] !== undefined && <p className="footnote">{metric.key === 'weightKg' ? 'Peso de referencia' : 'Objetivo'}: {formatValue(goals[metric.key], metric.key)}{record?.[metric.key] !== undefined && metric.key !== 'weightKg' ? ` · ${Math.round(record[metric.key]! / goals[metric.key]! * 100)} % guardado` : ''}</p>}
               <div className="field-controls">
-                <input id={metric.key} type="text" inputMode={metric.integer ? 'numeric' : 'decimal'} autoComplete="off" placeholder="Sin registrar" value={fields[metric.key]} onChange={event => { setFields({ ...fields, [metric.key]: event.target.value }); setStatus(''); setError('') }} />
+                <input id={metric.key} type="text" inputMode={metric.key === 'sleepMinutes' ? 'text' : metric.integer ? 'numeric' : 'decimal'} autoComplete="off" placeholder={metric.key === 'sleepMinutes' ? '07:30' : 'Sin registrar'} value={fields[metric.key]} onChange={event => { setFields({ ...fields, [metric.key]: event.target.value }); setStatus(''); setError('') }} />
                 {record?.[metric.key] !== undefined && <button type="button" className="delete-value" aria-label={`Borrar ${metric.label.toLowerCase()}`} onClick={() => {
                   if (window.confirm(`¿Borrar ${metric.label.toLowerCase()} de esta fecha? Los otros valores guardados se conservarán.`)) {
                     void persist(() => saveDaily(date, { ...valuesOf(record), [metric.key]: undefined }), 'Valor borrado. Los demás datos guardados se conservan.')

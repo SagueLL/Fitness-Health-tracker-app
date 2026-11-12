@@ -130,8 +130,37 @@ select option { background: var(--surface); }
 .tone-yellow { --tone-color: #ffe16a; --tone-bg: #2d2816; }
 .tone-brown { --tone-color: #d8ad80; --tone-bg: #2b2119; }
 .tone-red { --tone-color: #ff9393; --tone-bg: #2e1719; }
-.table-hint { font-size: 11px !important; color: var(--muted); margin-bottom: 8px; }
+.sleep-records .record-value { color: #fff; }
+.sleep-records th:nth-child(2), .sleep-records td:nth-child(2), .score-summary strong { text-align: center; }
+.summary-grid .sleep-quality { font-size: 16px; font-weight: 600; color: var(--tone-color, var(--text)); }
+.summary-grid .sleep-quality .sr-only { display: inline; }
 .tone-legend { margin-top: 16px; font-size: 12px; }.tone-legend summary { cursor: pointer; padding: 10px 0; color: var(--muted); }.tone-legend p { font-size: 12px; }.tone-legend ul { list-style: none; display: flex; flex-wrap: wrap; gap: 12px 18px; padding: 0; }.tone-legend li { display: flex; align-items: center; gap: 6px; }.tone-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--tone-color); }
+
+.csv-file { margin-top: 22px; }
+.csv-file label, .csv-field label { display: block; margin-bottom: 8px; }
+.csv-file input { padding: 10px; font-size: 13px; }
+.csv-file .footnote { margin: 8px 0; }
+.csv-filename { overflow-wrap: anywhere; }
+.csv-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+.csv-field { min-width: 0; }
+.csv-field select { min-width: 0; }
+.csv-import h3 { font-size: 17px; margin: 22px 0 14px; }
+.csv-import .text-link { margin-top: 0; }
+.csv-errors { margin-top: 22px; color: var(--danger); }
+.csv-errors ul, .import-conflicts ul { max-height: 280px; overflow: auto; padding-left: 22px; font-size: 13px; overflow-wrap: anywhere; }
+.csv-errors li, .import-conflicts li { margin-bottom: 10px; }
+.import-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); list-style: none; gap: 10px; padding: 0; font-size: 13px; color: var(--muted); }
+.import-counts li { padding: 12px; border: 1px solid var(--border); border-radius: 10px; }
+.import-counts strong { display: block; font-size: 20px; color: var(--text); margin-bottom: 4px; }
+.import-days { list-style: none; padding: 0; display: grid; gap: 12px; }
+.import-days li { padding: 14px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; overflow-wrap: anywhere; }
+.import-days dl { margin: 12px 0 0; }
+.import-days dt { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.import-days dd { margin: 4px 0 0; font-size: 13px; line-height: 1.6; }
+.import-conflicts summary { cursor: pointer; padding: 14px 0; font-size: 14px; }
+.import-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.import-result h3 { color: var(--accent); }
+@media (max-width: 480px) { .csv-fields { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 480px) { .brand-name { font-size: 30px; }.brand-mark { width: 44px; height: 44px; font-size: 39px; } }
 
 .summary-grid .sleep-average { background: var(--tone-bg); border-color: var(--tone-color); }.summary-grid .sleep-average strong { color: var(--tone-color); }.sleep-average small + small { margin-top: 8px; line-height: 1.5; }.sleep-insight h2 { font-size: 18px; }.sleep-range-value { font-size: 22px; }.sleep-insight details { font-size: 12px; }.sleep-insight summary { cursor: pointer; padding: 10px 0; }

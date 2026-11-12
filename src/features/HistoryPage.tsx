@@ -1,5 +1,4 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { NavLink } from 'react-router-dom'
 import WaterRing from './WaterRing'
 import { waterAverageTone } from '../domain/water'
 import { historyTone } from '../domain/historyTone'
@@ -96,8 +95,8 @@ export default function HistoryPage() {
         <div className="metric-dots" aria-label="Elegir gráfica">{metrics.map((item, index) => <button type="button" key={item.key} aria-label={`Ver ${item.label.toLowerCase()}`} aria-pressed={index === active} onClick={() => showMetric(index)}><span /></button>)}</div>
       </section>
       <div className="period-buttons overview-periods" aria-label="Duración del periodo">{[7, 30, 90].map(days => <button key={days} type="button" aria-pressed={days === period} disabled={days === period} onClick={() => changeRange(() => setPeriod(days))}>{days} días</button>)}</div>
-      <div className="summary-grid">
-        <article className={averageTone ? `sleep-average average-highlight tone-${averageTone.tone}` : undefined}><span>Media del periodo</span><strong>{formatValue(summary.average, metric)}</strong><small>{summary.count} de {period} días registrados</small>{metric === 'waterMl' && averageTone && <small>{'label' in averageTone ? averageTone.label : ''}</small>}{metric === 'sleepMinutes' && <small>{sleepAverage.score === undefined ? 'Sin calidad asociada' : `Calidad media: ${sleepAverage.score.toLocaleString('es', { maximumFractionDigits: 1 })} puntos · ${sleepAverage.count} noches con duración y puntuación`}</small>}</article>
+      <div className={`summary-grid${metric === 'sleepScore' ? ' score-summary' : ''}`}>
+        <article className={averageTone ? `sleep-average average-highlight tone-${averageTone.tone}` : undefined}><span>Media del periodo</span><strong>{formatValue(summary.average, metric)}</strong><small>{summary.count} de {period} días registrados</small>{metric === 'waterMl' && averageTone && <small>{'label' in averageTone ? averageTone.label : ''}</small>}{metric === 'sleepMinutes' && sleepAverage.score !== undefined && <small className="sleep-quality"><span className="sr-only">Calidad media: </span>{formatValue(sleepAverage.score, 'sleepScore')}<span className="sr-only">; {sleepAverage.count} noches con duración y puntuación</span></small>}</article>
         <article><span>Rango registrado</span><strong>{summary.count ? `${formatValue(summary.min, metric)} – ${formatValue(summary.max, metric)}` : 'Sin registros'}</strong><small>{summary.missing} días sin registrar</small></article>
       </div>
       {metric === 'sleepMinutes' && <section className="panel sleep-insight" aria-labelledby="sleep-range-title"><h2 id="sleep-range-title">Tu rango observado</h2>
@@ -109,9 +108,8 @@ export default function HistoryPage() {
       </section>}
       {metric === 'weightKg' && <p className="goal-summary">Cambio del periodo: <strong>{summary.change === undefined ? 'Faltan registros' : `${summary.change > 0 ? '+' : ''}${formatValue(summary.change, metric)}`}</strong></p>}
       {metric !== 'sleepScore' && metric !== 'weightKg' && metric !== 'waterMl' && <p className="goal-summary">{summary.eligible ? `${summary.achieved} de ${summary.eligible} días registrados con objetivo cumplido.` : 'Sin días registrados con objetivo para comparar.'} Los días sin registro no cuentan como cumplidos.</p>}
-      <section className="panel history-records"><h2>Registros del periodo</h2><p>Los días sin datos de esta métrica no aparecen en la tabla.</p>
+      <section className="panel history-records"><h2>Registros del periodo</h2>
         {rows.length ? <HistoryTable rows={rows} metric={metric} title={title} period={period} /> : <p>No hay registros para mostrar.</p>}
-        <NavLink className="text-link" to="/registros">Ir al registro diario →</NavLink>
       </section>
     </>}
   </>

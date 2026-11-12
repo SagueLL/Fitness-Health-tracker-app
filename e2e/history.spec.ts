@@ -59,6 +59,7 @@ test('gráficas, cobertura, objetivos históricos, periodos y edición desde la 
   await page.getByRole('link', { name: `Editar registro del ${date}` }).click()
   await expect(page.getByLabel('Fecha del registro')).toHaveValue(date)
   await expect(page.getByLabel('Peso (kg)', { exact: true })).toHaveValue('73,5')
+  await expect(page.getByLabel('Duración del sueño (HH:mm)', { exact: true })).toHaveValue('07:30')
 })
 
 test('objetivos básicos persistentes y reflejados en el registro diario', async ({ page }) => {
@@ -132,6 +133,13 @@ test('tabla limitada a cinco filas, colores por tramo y acceso a los registros r
   await page.getByRole('button', { name: 'Ver puntuación del sueño', exact: true }).click()
   const table = page.getByRole('region', { name: /^Tabla de puntuación del sueño/ })
   await expect(table.locator('tbody tr')).toHaveCount(8)
+  await expect(table.locator('.record-value').first()).toHaveText('95')
+  await expect(table.locator('.record-value').first()).toHaveCSS('color', 'rgb(255, 255, 255)')
+  await expect(table.locator('td').first()).toHaveCSS('text-align', 'center')
+  await expect(page.locator('.summary-grid strong').first()).toHaveText('73,8')
+  await expect(page.locator('.summary-grid strong').first()).toHaveCSS('text-align', 'center')
+  await expect(page.locator('.summary-grid')).not.toContainText('puntos')
+  await expect(page.locator('.history-records > p, .table-hint, .history-records > a')).toHaveCount(0)
   for (const [index, tone] of ['pink', 'lime', 'green', 'yellow', 'brown', 'red', 'pink', 'lime'].entries()) {
     await expect(table.locator('tbody tr').nth(index)).toHaveClass(new RegExp(`tone-${tone}`))
   }
@@ -147,6 +155,13 @@ test('tabla limitada a cinco filas, colores por tramo y acceso a los registros r
     await expect(durations.locator('tbody tr').nth(index)).toHaveClass(new RegExp(`tone-${tone}`))
   }
   await expect(durations.getByRole('columnheader')).toHaveText(['Fecha', 'Registro'])
+  await expect(durations.locator('.record-value').first()).toHaveCSS('color', 'rgb(255, 255, 255)')
+  await expect(page.locator('.sleep-quality')).toBeVisible()
+  expect(await page.locator('.sleep-quality').evaluate(element => {
+    const visible = element.cloneNode(true) as HTMLElement
+    visible.querySelectorAll('.sr-only').forEach(node => node.remove())
+    return visible.textContent
+  })).toBe('73,8')
   await expect(page.locator('.sleep-average')).toHaveClass(/tone-green/)
   await expect(page.getByRole('region', { name: 'Tu rango observado' })).toContainText('8 de 14')
   await page.getByRole('button', { name: 'Ver puntuación del sueño', exact: true }).click()

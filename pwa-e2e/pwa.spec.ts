@@ -38,6 +38,35 @@ test('manifiesto e iconos válidos, caché de recursos y modo sin conexión prep
 })
 function locationOrigin(url: string) { return new URL(url).origin }
 
+test('importa CSV y descarga la plantilla sin conexión conservando datos al reabrir', async ({ page, context }) => {
+  await ready(page)
+  await context.setOffline(true)
+  await page.reload()
+  await page.getByRole('navigation').getByRole('link', { name: 'Ajustes' }).click()
+  const template = await page.getByRole('link', { name: 'Descargar plantilla CSV' }).getAttribute('href')
+  const templateText = await page.evaluate(async url => {
+    const response = await fetch(url!)
+    if (!response.ok) throw new Error('Plantilla no disponible')
+    return response.text()
+  }, template)
+  expect(templateText).toContain('fecha;agua_ml;sueno_hhmm')
+  await page.getByLabel('Archivo CSV', { exact: true }).setInputFiles({ name: 'historial.csv', mimeType: 'text/csv', buffer: Buffer.from('fecha;sueno\n2026-01-01;07:30') })
+  await page.getByLabel('Columna de fecha', { exact: true }).selectOption('0')
+  await page.getByLabel('Columna de duración del sueño', { exact: true }).selectOption('1')
+  await page.getByRole('button', { name: 'Revisar importación' }).click()
+  await page.getByRole('button', { name: 'Importar datos', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'Importación completada' })).toBeVisible()
+  await page.close()
+  const reopened = await context.newPage()
+  await reopened.goto('/#/registros?date=2026-01-01')
+  await expect(reopened.getByLabel('Duración del sueño (HH:mm)', { exact: true })).toHaveValue('07:30')
+  await reopened.getByLabel('Duración del sueño (HH:mm)', { exact: true }).fill('08:15')
+  await reopened.getByRole('button', { name: 'Guardar registro', exact: true }).click()
+  await expect(reopened.getByRole('region', { name: 'Tu registro diario' }).getByRole('status')).toContainText('Registro guardado')
+  await reopened.reload()
+  await expect(reopened.getByLabel('Duración del sueño (HH:mm)', { exact: true })).toHaveValue('08:15')
+})
+
 test('reabre y guarda registros y fases sin red con datos persistentes', async ({ page, context }) => {
   await ready(page)
   await page.getByLabel('Peso (kg)', { exact: true }).fill('73,5')

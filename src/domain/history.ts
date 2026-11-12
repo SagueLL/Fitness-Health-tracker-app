@@ -44,6 +44,7 @@ export function formatValue(value: number | undefined, metric: Metric) {
     const rounded = Math.round(value)
     return `${Math.floor(rounded / 60)} h ${rounded % 60} min`
   }
+  if (metric === 'sleepScore') return value.toLocaleString('es', { maximumFractionDigits: 1 })
   return `${value.toLocaleString('es', { useGrouping: 'always', maximumFractionDigits: metric === 'weightKg' ? 2 : 1 })} ${metric === 'waterMl' ? 'ml' : metric === 'weightKg' ? 'kg' : metric === 'steps' ? 'pasos' : 'puntos'}`
 }
 

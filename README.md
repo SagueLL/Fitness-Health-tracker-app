@@ -64,7 +64,7 @@ La primera versión se centrará en reproducir el uso personal de la hoja desde 
 
 Estas ampliaciones quedan fuera del alcance inicial y se abordarán según las necesidades y la viabilidad técnica:
 
-- **Migración de datos:** importar el histórico de Google Sheets, Excel o archivos CSV, definiendo antes el formato y la correspondencia de los campos.
+- **Migración de datos:** la importación CSV de registros diarios está disponible; las conexiones directas con hojas de cálculo quedan para una ampliación posterior.
 - **Exportación:** permitir obtener una copia de los registros para utilizarlos en otras herramientas.
 - **Integración con Garmin:** estudiar las opciones de acceso y sincronización de métricas del reloj, especialmente el sueño y los pasos.
 - **Conexión con hojas de cálculo:** valorar el intercambio de datos con Google Sheets u otros archivos.
@@ -114,9 +114,9 @@ npm run preview    # Servir la compilación localmente
 
 ### Qué se puede probar ahora
 
-- En Registros, seleccionar hoy o una fecha anterior y registrar agua (ml), sueño (duración en minutos y puntuación de 0 a 100), pasos y peso (kg).
+- En Registros, seleccionar hoy o una fecha anterior y registrar agua (ml), sueño (duración en `HH:mm`, por ejemplo `07:30`, y puntuación de 0 a 100), pasos y peso (kg).
 - Editar los valores, borrar cada métrica con confirmación y comprobar su persistencia al recargar. Los campos vacíos son datos ausentes; cero es un valor registrado.
-- Usar coma o punto decimal, sin separadores de miles. Los pasos y la duración del sueño se introducen como enteros.
+- Usar coma o punto decimal, sin separadores de miles. Los pasos se introducen como enteros. La duración del registro diario utiliza `HH:mm`, desde `00:00` hasta `24:00`, y se guarda internamente en minutos. Los objetivos de sueño mantienen su entrada en minutos.
 - Añadir agua rápidamente a la fecha seleccionada. En Registros → Objetivos y registro rápido se configura la cantidad por pulsación.
 - En Registros → Objetivos y registro rápido, configurar objetivos opcionales de agua, pasos, duración del sueño y peso de referencia. Cada versión empieza hoy o en una fecha futura; sustituir una versión con la misma fecha requiere confirmación. Dejar un objetivo vacío lo desactiva desde esa fecha.
 - En Registros, consultar los objetivos correspondientes a la fecha seleccionada.
@@ -169,7 +169,7 @@ Alpha utiliza un tema oscuro principal (negros y grises), acentos dorados y el s
 1. **Resumen** (`/#/`): pantalla inicial con gráficas, medias, cobertura y consulta del histórico. Gráficas deslizables por métrica y selector compartido de 7/30/90 días, seguido de medias, rangos y registros.
 2. **Registros** (`/#/registros`): agua, duración/calidad del sueño, pasos y peso por fecha. Al final, «Objetivos y registro rápido» agrupa los objetivos básicos y la cantidad del botón de agua.
 3. **Dieta** (`/#/dieta`): Mi dieta y Calculadora, con edición, duplicación y comparación de fases.
-4. **Ajustes** (`/#/ajustes`): instalación de Alpha, disponibilidad sin conexión y búsqueda de actualizaciones, sin formularios de registros ni información de salud.
+4. **Ajustes** (`/#/ajustes`): importación CSV del histórico, instalación de Alpha, disponibilidad sin conexión y búsqueda de actualizaciones.
 
 La antigua ruta `/#/evolucion` redirige al Resumen y los enlaces antiguos `/#/?date=…` abren el registro correspondiente. El nombre interno de IndexedDB se conserva para seguir accediendo a todos los datos existentes; el cambio de marca no requiere migración. La instalación PWA y la carga sin conexión están implementadas para la compilación de producción; falta la verificación de instalación en el teléfono y una URL HTTPS de alojamiento.
 
@@ -194,9 +194,9 @@ Los acentos principales usan ahora amarillo brillante sobre negros y grises. El 
 
 ### Duración y calidad del sueño
 
-La gráfica de puntuación tiene eje fijo de 0 a 100 (marcas 0/25/50/75/100). En la tabla de duración, la columna Calidad muestra la puntuación de la misma fecha y determina el color de la fila. Una duración sin puntuación queda neutra, aunque tenga objetivo.
+La gráfica de puntuación tiene eje fijo de 0 a 100 (marcas 0/25/50/75/100). En la tabla de duración, el color de cada fila utiliza la puntuación de la misma fecha; la columna Registro muestra la duración en blanco. Una duración sin puntuación queda neutra, aunque tenga objetivo.
 
-La tarjeta de duración media conserva la media de todas las duraciones registradas del periodo, pero su color corresponde a la puntuación media de las noches del periodo con duración positiva y puntuación válidas. Se indica la puntuación y el número de noches emparejadas para no confundir la cobertura de ambos cálculos.
+La tarjeta de duración media conserva la media de todas las duraciones registradas del periodo, pero su color corresponde a la puntuación media de las noches del periodo con duración positiva y puntuación válidas. Se muestra la calidad numérica sin descripción adicional; su cobertura emparejada sigue disponible para lectores de pantalla, junto a los días con duración registrados.
 
 El rango personal es **observacional y exploratorio**, no una estimación clínica validada de las horas óptimas. Usa todo el histórico hasta hoy, requiere al menos 14 noches con ambos datos y una amplitud de puntuación de al menos 10 puntos. Selecciona el 25 % de noches mejor puntuadas (mínimo cinco, incluyendo todos los empates en el corte) y muestra los percentiles 25–75 de sus duraciones. Así se reduce el efecto de extremos sin asumir que dormir más siempre mejora la calidad. Si faltan datos o las puntuaciones son muy similares, no se propone un rango. Estos umbrales son decisiones de producto, no límites fisiológicos. El objetivo configurado no se modifica.
 
@@ -230,3 +230,14 @@ En Registros del periodo, Agua, Duración del sueño y Puntuación del sueño mu
 La versión de producción incorpora manifiesto, iconos y caché de los recursos de la aplicación. Tras una primera carga completa con conexión, Alpha puede reabrirse y guardar registros y dietas sin red. Ajustes incluye instalación e instrucciones para Android/iOS, disponibilidad offline y búsqueda de actualizaciones. Las versiones nuevas esperan confirmación antes de recargar y conservan IndexedDB.
 
 Para probar: `npm ci`, `npm run build` y `npm run preview`. El modo de desarrollo (`npm run dev`) no activa el service worker. Para instalar en el teléfono hace falta alojar `dist/` en una URL HTTPS estable; todavía no se ha publicado un alojamiento. Detalles y comprobaciones manuales pendientes en [docs/PWA.md](docs/PWA.md).
+
+
+### Actualización 1.1
+
+- Registro y edición del sueño en **HH:mm**, conservando los minutos almacenados y todos los registros anteriores.
+- Puntuaciones sin «puntos», valores de sueño blancos y tablas del periodo sin textos adicionales ni enlace directo al registro diario. Las fechas siguen siendo editables.
+- **Ajustes → Importar CSV**: columnas, fechas y unidades configurables, validación completa y previsualización. Solo completa ausencias, conserva valores guardados y ceros, y guarda mediante una transacción atómica. Funciona sin conexión.
+- [Guía y reglas del CSV](docs/IMPORTAR_CSV.md), con [plantilla](public/plantilla-registros.csv) descargable también desde la app.
+- [Estudio de Garmin](docs/GARMIN.md): API personal oficial, métricas, autenticación y bloqueo CORS observado. Esta versión no activa la conexión con Garmin ni añade un servidor.
+
+La actualización conserva el nombre y el esquema v5 de IndexedDB. Para distribuirla hay que compilar y publicar `dist/` en el mismo origen HTTPS de la PWA; hacer push al repositorio por sí solo no actualiza las instalaciones.

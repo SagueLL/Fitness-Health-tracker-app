@@ -1,8 +1,10 @@
 import { usePwa } from './PwaContext'
+import CsvImport from '../features/CsvImport'
 
 export default function PwaSettings() {
   const pwa = usePwa()
   return <><h1 className="page-title">Ajustes</h1>
+    <CsvImport />
     <section className="panel" aria-labelledby="install-title"><h2 id="install-title">Instalar Alpha</h2>
       {pwa.installed ? <p>Alpha está abierta como aplicación instalada.</p> : <>
         <p>Añade Alpha a tu pantalla de inicio para abrirla como una app.</p>

@@ -27,7 +27,7 @@ export default function HistoryChart({ points, metric }: { points: HistoryPoint[
   const axis = (v: number) => (metric === 'sleepMinutes' ? v / 60 : v).toLocaleString('es', { maximumFractionDigits: metric === 'weightKg' ? 1 : 0 })
   const unit = metric === 'sleepMinutes' ? 'horas' : metric === 'waterMl' ? 'ml' : metric === 'weightKg' ? 'kg' : metric === 'steps' ? 'pasos' : 'puntos'
   return <>
-    <p className="chart-unit">{unit}</p>
+    <p className={`chart-unit${metric === 'sleepScore' ? ' chart-unit-empty' : ''}`} aria-hidden={metric === 'sleepScore'}>{metric === 'sleepScore' ? '\u00a0' : unit}</p>
     <svg className="history-chart" viewBox={`0 0 ${W} ${H}`} role="group" aria-label="Gráfica de evolución. Toca un registro para ver su detalle; también disponible en la tabla inferior.">
       {(metric === 'sleepScore' ? [0, 25, 50, 75, 100] : [lo, lo + (hi - lo) / 3, lo + 2 * (hi - lo) / 3, hi]).map((v, index) => {
         return <g key={index}><line x1={left} x2={W - right} y1={y(v)} y2={y(v)} className="chart-grid" /><text x={left - 10} y={y(v) + 6} textAnchor="end">{axis(v)}</text></g>

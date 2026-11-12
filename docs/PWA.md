@@ -5,7 +5,7 @@
 - Manifiesto con nombre Alpha, inicio en Resumen y ventana independiente (`standalone`).
 - Iconos PNG de 192/512 px, icono maskable con margen seguro y Apple Touch Icon de 180 px.
 - Service worker generado con Vite PWA/Workbox en cada compilación.
-- Precaché de HTML, JavaScript, CSS e iconos. Los registros personales permanecen en IndexedDB; no se suben ni se copian a la caché de red.
+- Precaché de HTML, JavaScript, CSS, iconos y plantilla CSV. Los registros personales permanecen en IndexedDB; no se suben ni se copian a la caché de red.
 - Primera carga con conexión; después se puede abrir, recargar, navegar y guardar datos sin red.
 - Instalación desde Ajustes cuando el navegador ofrece el aviso nativo; instrucciones para Safari/iOS y otros navegadores.
 - Detección de conexión y de ventana instalada. Aviso de nueva versión y aplicación explícita con confirmación antes de recargar.
@@ -29,7 +29,7 @@ npm run build
 npm run test:pwa
 ```
 
-Las pruebas PWA usan la compilación en el puerto 4174, separado de los recorridos de desarrollo del puerto 4173. Verifican manifiesto/iconos, disponibilidad offline, cierre y reapertura de pestaña sin red, escritura de registros y dietas, instalación por acción explícita y una actualización de service worker con IndexedDB conservado. El caso de actualización cambia temporalmente el archivo generado `dist/sw.js` y lo restaura al terminar; no modifica fuentes.
+Las pruebas PWA usan la compilación en el puerto 4174, separado de los recorridos de desarrollo del puerto 4173. Verifican manifiesto/iconos, disponibilidad offline, cierre y reapertura de pestaña sin red, escritura de registros y dietas, importación CSV y acceso a su plantilla sin conexión, edición del sueño en HH:mm, instalación por acción explícita y una actualización de service worker con IndexedDB conservado. El caso de actualización cambia temporalmente el archivo generado `dist/sw.js` y lo restaura al terminar; no modifica fuentes.
 
 ## Instalar en el teléfono
 
